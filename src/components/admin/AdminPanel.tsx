@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -45,7 +45,17 @@ export const AdminPanel = () => {
     const activePanel = searchParams.get('tab') || 'dashboard';
     const setActivePanel = (tab: string) => setSearchParams({ tab });
 
-    const [collapsed, setCollapsed] = useState(false);
+    const [_collapsed, setCollapsed] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const collapsed = isMobile ? false : _collapsed;
     const { logoutAdmin, siteConfig } = usePortfolioStore();
     const { showToast } = useToast();
     const navigate = useNavigate();
@@ -68,7 +78,7 @@ export const AdminPanel = () => {
     };
 
     const activeItem = ALL_NAV_ITEMS.find(n => n.id === activePanel);
-    const SIDEBAR_W = collapsed ? 80 : 240;
+    const SIDEBAR_W = isMobile ? (mobileMenuOpen ? 240 : 0) : (collapsed ? 80 : 240);
 
     const initials = siteConfig.name
         ? siteConfig.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
@@ -76,6 +86,19 @@ export const AdminPanel = () => {
 
     return (
         <div className="flex min-h-screen text-gray-100" style={{ background: '#000000', fontFamily: 'var(--font-body, system-ui)' }}>
+
+            {/* Mobile Backdrop */}
+            <AnimatePresence>
+                {isMobile && mobileMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"
+                        onClick={() => setMobileMenuOpen(false)}
+                    />
+                )}
+            </AnimatePresence>
 
             {/* ── Sidebar ── */}
             <motion.aside
@@ -92,7 +115,7 @@ export const AdminPanel = () => {
                 <div className="flex items-center shrink-0 h-14" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     <div className="w-[80px] shrink-0 flex items-center justify-center">
                         <button
-                            onClick={() => setCollapsed(!collapsed)}
+                            onClick={() => isMobile ? setMobileMenuOpen(false) : setCollapsed(!_collapsed)}
                             className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
                         >
                             <Menu size={18} />
@@ -132,7 +155,10 @@ export const AdminPanel = () => {
                                 return (
                                     <div key={item.id} className="px-3 mb-0.5">
                                         <button
-                                            onClick={() => setActivePanel(item.id)}
+                                            onClick={() => {
+                                                setActivePanel(item.id);
+                                                if (isMobile) setMobileMenuOpen(false);
+                                            }}
                                             title={collapsed ? item.label : undefined}
                                             className={`flex items-center w-full rounded-lg transition-all duration-150 relative text-sm font-medium
                                                 ${collapsed ? 'justify-center px-0 py-3' : 'gap-3 px-3 py-2.5'}`}
@@ -250,7 +276,7 @@ export const AdminPanel = () => {
 
             {/* ── Main ── */}
             <motion.main
-                animate={{ marginLeft: SIDEBAR_W }}
+                animate={{ marginLeft: isMobile ? 0 : SIDEBAR_W }}
                 transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 className="flex-1 flex flex-col min-w-0 min-h-screen"
             >
@@ -265,6 +291,14 @@ export const AdminPanel = () => {
                 >
                     {/* Left: breadcrumb */}
                     <div className="flex items-center gap-3">
+                        {isMobile && (
+                            <button
+                                onClick={() => setMobileMenuOpen(true)}
+                                className="p-2 -ml-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                            >
+                                <Menu size={18} />
+                            </button>
+                        )}
                         <div className="flex items-center gap-2 text-sm pl-2">
                             <span className="text-gray-600">Admin</span>
                             <span className="text-gray-700">/</span>
