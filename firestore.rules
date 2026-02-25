@@ -1,0 +1,48 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if the user is logged into Firebase
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // 1. Projects Collection
+    match /projects/{projectId} {
+      allow read: if true;                     // Anyone can view your projects
+      allow write: if isAuthenticated();       // Only you can add/edit/delete
+    }
+
+    // 2. Skills Collection
+    match /skills/{skillId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // 3. Experiences Collection
+    match /experiences/{experienceId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // 4. Certificates Collection
+    match /certificates/{certificateId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // 5. Site Configuration
+    match /config/siteConfig {
+      // Configuration might have sensitive info, but since it's a portfolio, 
+      // the public data (bio, tagline, social links) needs to be readable.
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+    
+    // 6. Default block for any other random collections (deny all)
+    match /{document=**} {
+      allow read, write: if false; 
+    }
+  }
+}

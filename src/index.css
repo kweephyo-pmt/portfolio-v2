@@ -1,0 +1,264 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Color Palette (Vibrant Purple Theme) */
+  --color-bg: #271249;
+  --color-bg-secondary: #3b1b6d;
+  --color-bg-card: rgba(59, 27, 109, 0.4);
+  --color-bg-glass: rgba(59, 27, 109, 0.3);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-hover: #00d8ff;
+
+  /* Brand Colors */
+  --color-accent: #00d8ff;
+  /* Cyan / Teal */
+  --color-accent-2: #8b5cf6;
+  /* Purple */
+  --color-accent-3: #f43f5e;
+  /* Pink */
+  --color-accent-glow: rgba(0, 216, 255, 0.2);
+
+  /* Text */
+  --color-text: #ffffff;
+  --color-text-muted: #d1d5db;
+  --color-text-dim: #9ca3af;
+
+  /* Status */
+  --color-success: #3fb950;
+  --color-error: #f85149;
+  --color-warning: #d29922;
+  --color-info: #00d8ff;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Poppins', system-ui, sans-serif;
+
+  /* Spacing */
+  --container-max: 1280px;
+  --section-padding: 5rem;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadow */
+  --shadow-glow: 0 0 0 1px var(--color-border-hover), 0 0 20px var(--color-accent-glow);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --shadow-elevated: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Reset & Base ────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: radial-gradient(circle at top right, #381962 0%, #1e0e3b 50%, #110526 100%);
+  background-attachment: fixed;
+  color: var(--color-text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-2);
+}
+
+/* ─── Typography ──────────────────────────────────────────────────────────── */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ─── Utilities ───────────────────────────────────────────────────────────── */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.section {
+  padding: var(--section-padding) 0;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass {
+  background: var(--color-bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+}
+
+/* ─── Buttons ─────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 2rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  border: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--color-accent);
+  color: #000;
+  box-shadow: 0 4px 20px var(--color-accent-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--color-accent-glow);
+}
+
+.btn-secondary {
+  background: var(--color-accent-2);
+  color: white;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  backdrop-filter: blur(8px);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* ─── Form Elements ───────────────────────────────────────────────────────── */
+.input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(0, 216, 255, 0.15);
+}
+
+.input::placeholder {
+  color: var(--color-text-dim);
+}
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* ─── Section Headers ─────────────────────────────────────────────────────── */
+.section-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-family: var(--font-mono);
+  color: var(--color-accent);
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.section-desc {
+  font-size: 1.05rem;
+  color: var(--color-text-muted);
+  max-width: 600px;
+  line-height: 1.8;
+}
+
+/* ─── Image Fallbacks ─────────────────────────────────────────────────────── */
+img {
+  pointer-events: none;
+}
