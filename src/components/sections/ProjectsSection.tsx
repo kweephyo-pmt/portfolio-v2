@@ -11,7 +11,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
     return (
         <Link
             to={`/project/${project.id}`}
-            className="group bg-[#09090b] rounded-2xl overflow-hidden cursor-pointer flex flex-col transition-all duration-500 border border-white/5 hover:border-[#00d8ff]/30 hover:shadow-[0_20px_50px_rgba(0,216,255,0.1)] hover:-translate-y-2"
+            className="group h-full bg-[#09090b] rounded-2xl overflow-hidden cursor-pointer flex flex-col transition-all duration-500 border border-white/5 hover:border-[#00d8ff]/30 hover:shadow-[0_20px_50px_rgba(0,216,255,0.1)] hover:-translate-y-2"
         >
             {/* Image Container */}
             <div className="relative h-[220px] overflow-hidden bg-black rounded-t-2xl" style={{ isolation: 'isolate', WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}>
@@ -49,7 +49,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
 
             {/* Content */}
             <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-[1.05rem] font-bold mb-2 leading-tight group-hover:text-[#00d8ff] transition-colors">
+                <h3 className="text-[1.05rem] font-bold mb-2 leading-tight group-hover:text-[#00d8ff] transition-colors line-clamp-2 min-h-[2.1rem]">
                     {project.title}
                 </h3>
                 <p className="text-[0.85rem] text-[var(--color-text-muted)] leading-relaxed mb-5 line-clamp-2">
@@ -57,7 +57,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
                 </p>
 
                 {/* Tech Stack */}
-                <div className="flex flex-wrap gap-1.5 mb-5">
+                <div className="flex flex-wrap gap-1.5 mb-5 min-h-[2.5rem]">
                     {project.technologies.slice(0, 4).map((tech) => (
                         <span key={tech} className="px-2.5 py-0.5 rounded-md text-[0.7rem] font-medium bg-[rgba(88,166,255,0.08)] text-[var(--color-text-muted)] border border-[rgba(88,166,255,0.12)]">
                             {tech}
