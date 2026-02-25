@@ -2,7 +2,7 @@
 
 A high-performance, ultra-modern developer portfolio website designed with a dark, immersive aesthetic. Built for speed, seamless animations, and absolute administrative control via a fully functional backend dashboard.
 
-![Portfolio Preview Showcase](public/og.png)
+![Portfolio Preview Showcase](public/preview.png)
 
 ## 📌 Key Features
 

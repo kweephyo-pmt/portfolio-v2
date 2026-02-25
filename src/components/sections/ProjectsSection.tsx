@@ -21,7 +21,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
                 <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-700 scale-[1.01] group-hover:scale-110"
+                    className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
                     style={{
                         backfaceVisibility: 'hidden',
                         WebkitBackfaceVisibility: 'hidden',
