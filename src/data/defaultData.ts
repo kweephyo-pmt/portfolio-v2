@@ -13,7 +13,7 @@ export const defaultProjects: Project[] = [
         githubUrl: "https://github.com/kweephyo-pmt/new_life",
         category: "web",
         year: "2025",
-        image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80",
+        image: "",
         featured: true,
         order: 1,
         features: [
@@ -35,7 +35,7 @@ export const defaultProjects: Project[] = [
         githubUrl: "https://github.com/kweephyo-pmt/TrackPoint",
         category: "web",
         year: "2025",
-        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+        image: "",
         featured: true,
         order: 2,
         features: [
@@ -57,7 +57,7 @@ export const defaultProjects: Project[] = [
         githubUrl: "https://github.com/kweephyo-pmt/WeFlix",
         category: "web",
         year: "2025",
-        image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&q=80",
+        image: "",
         featured: false,
         order: 3,
         features: [
@@ -77,7 +77,7 @@ export const defaultProjects: Project[] = [
         githubUrl: "https://github.com/kweephyo-pmt/linkclub",
         category: "web",
         year: "2025",
-        image: "https://images.unsplash.com/photo-1611746872915-64382b5c76da?w=800&q=80",
+        image: "",
         featured: true,
         order: 4,
         features: [
@@ -97,7 +97,7 @@ export const defaultProjects: Project[] = [
         githubUrl: "https://github.com/kweephyo-pmt/senior_project",
         category: "web",
         year: "2025",
-        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+        image: "",
         featured: false,
         order: 5,
         features: [
@@ -117,7 +117,7 @@ export const defaultProjects: Project[] = [
         githubUrl: "https://github.com/kweephyo-pmt/cafe_z",
         category: "mobile",
         year: "2024",
-        image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80",
+        image: "",
         featured: false,
         order: 6,
         features: [
@@ -136,7 +136,7 @@ export const defaultProjects: Project[] = [
         githubUrl: "https://github.com/kweephyo-pmt/phyominthein-portfolio",
         category: "web",
         year: "2025",
-        image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80",
+        image: "",
         featured: false,
         order: 7,
         features: [
@@ -156,7 +156,7 @@ export const defaultProjects: Project[] = [
         githubUrl: "https://github.com/kweephyo-pmt/lost_found",
         category: "mobile",
         year: "2023",
-        image: "https://images.unsplash.com/photo-1505409628601-edc9af17fda6?w=800&q=80",
+        image: "",
         featured: false,
         order: 8,
         features: [
@@ -188,7 +188,8 @@ export const defaultSiteConfig: SiteConfig = {
     resumeUrl: "",
     profileImage: "",
     accentColor: "#6366f1",
-    theme: "dark"
+    theme: "dark",
+    projectCategories: ["web", "mobile"]
 };
 
 // ─── Default Skills ──────────────────────────────────────────────────────────

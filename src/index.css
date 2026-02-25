@@ -69,6 +69,7 @@
 
 html {
   overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 body {
@@ -77,7 +78,6 @@ body {
   background-attachment: fixed;
   color: var(--color-text);
   line-height: 1.7;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

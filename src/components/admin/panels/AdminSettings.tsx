@@ -210,6 +210,76 @@ export const AdminSettings = () => {
                             </div>
                         </motion.div>
                     ))}
+
+                    {/* Project Categories Section */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="rounded-2xl p-6 sm:p-8"
+                        style={{ background: '#09090b', border: '1px solid rgba(255,255,255,0.07)' }}
+                    >
+                        <h2 className="text-base font-bold mb-2 flex items-center gap-2" style={{ color: '#ffffff' }}>
+                            <Globe size={18} />
+                            Project Categories
+                        </h2>
+                        <p className="text-xs text-gray-500 mb-6">Manage the tabs shown in your project showcase (e.g. Web, Mobile, UI/UX)</p>
+
+                        <div className="space-y-4">
+                            <div className="flex flex-wrap gap-2">
+                                {(form.projectCategories || []).map((cat, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-xs font-bold uppercase tracking-wider text-[#00d8ff]"
+                                    >
+                                        {cat}
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const newCats = (form.projectCategories || []).filter((_, i) => i !== idx);
+                                                setForm({ ...form, projectCategories: newCats });
+                                            }}
+                                            className="text-gray-500 hover:text-red-400 transition-colors"
+                                        >
+                                            &times;
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Add new category (e.g. Design)"
+                                    className="flex-1 rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors"
+                                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', color: '#e5e7eb' }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            const val = e.currentTarget.value.trim().toLowerCase();
+                                            if (val && !(form.projectCategories || []).includes(val)) {
+                                                setForm({ ...form, projectCategories: [...(form.projectCategories || []), val] });
+                                                e.currentTarget.value = '';
+                                            }
+                                        }
+                                    }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        const input = e.currentTarget.previousSibling as HTMLInputElement;
+                                        const val = input.value.trim().toLowerCase();
+                                        if (val && !(form.projectCategories || []).includes(val)) {
+                                            setForm({ ...form, projectCategories: [...(form.projectCategories || []), val] });
+                                            input.value = '';
+                                        }
+                                    }}
+                                    className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-bold"
+                                >
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
                 </div>
 
                 {/* Save Row */}

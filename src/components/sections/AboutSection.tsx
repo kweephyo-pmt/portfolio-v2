@@ -46,7 +46,45 @@ export const AboutSection = () => {
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
                         <h3 className="text-2xl md:text-3xl font-bold text-white mb-6">
-                            {siteConfig.aboutTitle || `Hi, I'm ${siteConfig.name || 'Phyo Min Thein'}`}
+                            {(() => {
+                                const title = siteConfig.aboutTitle;
+                                if (!title) {
+                                    return (
+                                        <>
+                                            Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6]">{siteConfig.name || 'Phyo Min Thein'}</span>
+                                        </>
+                                    );
+                                }
+
+                                const imIndex = title.indexOf("I'm ");
+                                if (imIndex !== -1) {
+                                    return (
+                                        <>
+                                            {title.substring(0, imIndex + 4)}<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6]">{title.substring(imIndex + 4)}</span>
+                                        </>
+                                    );
+                                }
+
+                                const amIndex = title.indexOf("am ");
+                                if (amIndex !== -1) {
+                                    return (
+                                        <>
+                                            {title.substring(0, amIndex + 3)}<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6]">{title.substring(amIndex + 3)}</span>
+                                        </>
+                                    );
+                                }
+
+                                const words = title.split(' ');
+                                if (words.length > 1) {
+                                    const lastWord = words.pop();
+                                    return (
+                                        <>
+                                            {words.join(' ')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6]">{lastWord}</span>
+                                        </>
+                                    );
+                                }
+                                return <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6]">{title}</span>;
+                            })()}
                         </h3>
                         <p className="text-[1.05rem] text-gray-300 leading-relaxed mb-8">
                             {siteConfig.aboutMe || "I'm a passionate full-stack developer who loves building elegant, user-centered digital experiences. With expertise spanning web and mobile development, I craft solutions that combine technical excellence with beautiful design."}

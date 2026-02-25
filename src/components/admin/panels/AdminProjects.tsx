@@ -14,12 +14,14 @@ const EMPTY_PROJECT: Omit<Project, 'id'> = {
     desc: '',
     url: '',
     githubUrl: '',
-    category: 'web',
+    category: '',
     year: new Date().getFullYear().toString(),
     image: '',
     features: [],
     featured: false,
     order: 999,
+    status: '',
+    role: '',
 };
 
 const ProjectForm = ({
@@ -33,8 +35,12 @@ const ProjectForm = ({
     onCancel: () => void;
     isNew: boolean;
 }) => {
+    const { siteConfig } = usePortfolioStore();
+    const categories = siteConfig.projectCategories || ['web', 'mobile'];
+
     const [form, setForm] = useState<any>({
         ...EMPTY_PROJECT,
+        category: categories[0] || '',
         ...project,
         technologiesStr: (project.technologies || []).join(', '),
         featuresStr: (project.features || []).join('\n'),
@@ -79,11 +85,19 @@ const ProjectForm = ({
                         </div>
                         <div className="space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Category *</label>
-                            <select className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
-                                <option value="web">Web</option>
-                                <option value="mobile">Mobile</option>
-                                <option value="other">Other</option>
+                            <select className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors capitalize" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
+                                {categories.map(cat => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                ))}
                             </select>
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</label>
+                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" value={form.status || ''} onChange={e => setForm({ ...form, status: e.target.value })} placeholder="e.g. Completed / Live" />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Role</label>
+                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" value={form.role || ''} onChange={e => setForm({ ...form, role: e.target.value })} placeholder="e.g. Lead Developer" />
                         </div>
                         <div className="space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Year</label>
@@ -240,7 +254,8 @@ const ProjectItemAdmin = ({
 };
 
 export const AdminProjects = () => {
-    const { projects, addProject, updateProject, deleteProject, reorderProjects, projectsLoaded } = usePortfolioStore();
+    const { projects, addProject, updateProject, deleteProject, reorderProjects, projectsLoaded, siteConfig } = usePortfolioStore();
+    const categories = ['all', ...(siteConfig.projectCategories || [])];
     const { showToast } = useToast();
     const [editing, setEditing] = useState<Project | null>(null);
     const [addingNew, setAddingNew] = useState(false);
@@ -316,9 +331,8 @@ export const AdminProjects = () => {
                 </button>
             </div>
 
-            {/* Filter */}
             <div className="flex flex-wrap gap-2">
-                {['all', 'web', 'mobile'].map(cat => (
+                {categories.map(cat => (
                     <button
                         key={cat}
                         onClick={() => setFilterCat(cat)}

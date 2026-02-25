@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ExternalLink, Github, Calendar, FolderOpen, Star } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Github, Calendar, FolderOpen, Star, Check } from 'lucide-react';
 import { usePortfolioStore } from '../store/portfolioStore';
 import { Footer } from '../components/layout/Footer';
 import { useEffect, useState } from 'react';
@@ -147,11 +147,13 @@ export const ProjectDetailsPage = () => {
                                             <Star size={20} className="text-gray-400" />
                                             Key Features
                                         </h2>
-                                        <ul className="space-y-3">
+                                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             {project.features.map((feature, idx) => (
-                                                <li key={idx} className="flex items-start gap-3 text-gray-300 bg-white/5 p-4 rounded-xl border border-white/5">
-                                                    <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
-                                                    <span className="leading-relaxed">{feature}</span>
+                                                <li key={idx} className="flex items-start gap-4 text-gray-300 bg-gradient-to-br from-white/5 to-transparent p-5 rounded-2xl border border-white/5 hover:border-[#00d8ff]/30 hover:shadow-[0_4px_20px_rgba(0,216,255,0.05)] transition-all group">
+                                                    <div className="mt-0.5 flex items-center justify-center p-1.5 bg-[#00d8ff]/10 rounded-full shrink-0 group-hover:bg-[#00d8ff]/20 transition-colors">
+                                                        <Check size={14} className="text-[#00d8ff]" />
+                                                    </div>
+                                                    <span className="leading-relaxed font-medium text-[0.95rem] group-hover:text-white transition-colors">{feature}</span>
                                                 </li>
                                             ))}
                                         </ul>
@@ -165,12 +167,12 @@ export const ProjectDetailsPage = () => {
                                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Status</p>
                                     <p className="text-sm font-medium text-emerald-400 flex items-center gap-2">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                        Completed / Live
+                                        {project.status || 'Completed / Live'}
                                     </p>
                                 </div>
                                 <div>
                                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Role</p>
-                                    <p className="text-sm font-medium text-white">Lead Developer</p>
+                                    <p className="text-sm font-medium text-white">{project.role || 'Lead Developer'}</p>
                                 </div>
                                 <div className="pt-4 border-t border-white/5">
                                     <p className="text-sm text-gray-400 leading-relaxed">

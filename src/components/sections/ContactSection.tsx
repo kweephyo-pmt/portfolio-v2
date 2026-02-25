@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Phone, Send, Github, Linkedin, MessageSquare } from 'lucide-react';
+import { Mail, MapPin, Phone, Send, Github, Linkedin, MessageSquare, Coffee } from 'lucide-react';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { SectionHeader } from '../ui/SectionHeader';
 import emailjs from '@emailjs/browser';
@@ -62,15 +62,23 @@ export const ContactSection = () => {
                         transition={{ duration: 0.6 }}
                         className="flex flex-col gap-6"
                     >
-                        <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-8">
-                            <div className="w-12 h-12 rounded-[var(--radius-md)] bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-2)] flex items-center justify-center mb-5 shadow-[0_8px_24px_var(--color-accent-glow)]">
-                                <MessageSquare size={22} color="white" />
+                        <div className={`border rounded-[var(--radius-xl)] p-8 transition-colors duration-300 ${siteConfig.availableForWork
+                                ? 'bg-[var(--color-bg-card)] border-[var(--color-border)]'
+                                : 'bg-[#09090b]/40 border-white/5 opacity-80'
+                            }`}>
+                            <div className={`w-12 h-12 rounded-[var(--radius-md)] flex items-center justify-center mb-5 transition-all duration-300 ${siteConfig.availableForWork
+                                    ? 'bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-2)] shadow-[0_8px_24px_var(--color-accent-glow)]'
+                                    : 'bg-gradient-to-br from-zinc-700 to-zinc-900 border border-white/10 shadow-sm'
+                                }`}>
+                                {siteConfig.availableForWork ? <MessageSquare size={22} color="white" /> : <Coffee size={22} className="text-gray-400" />}
                             </div>
-                            <h3 className="text-[1.1rem] font-bold mb-2">
-                                Open to Opportunities
+                            <h3 className={`text-[1.1rem] font-bold mb-2 transition-colors ${siteConfig.availableForWork ? 'text-white' : 'text-gray-400'}`}>
+                                {siteConfig.availableForWork ? "Open to Opportunities" : "Currently Unavailable"}
                             </h3>
                             <p className="text-[0.875rem] text-[var(--color-text-muted)] leading-[1.7]">
-                                I'm currently {siteConfig.availableForWork ? 'available for' : 'not actively looking for'} new opportunities. Whether it's a full-time role, freelance project, or just a chat — reach out!
+                                {siteConfig.availableForWork
+                                    ? "I'm currently available for new opportunities. Whether it's a full-time role, freelance project, or just a chat — reach out!"
+                                    : "I'm not actively looking for new opportunities right now, but my inbox is always open. Feel free to leave a message and I'll get back to you!"}
                             </p>
                         </div>
 

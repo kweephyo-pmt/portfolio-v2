@@ -6,12 +6,14 @@ export interface Project {
     desc: string;
     url: string;
     githubUrl: string;
-    category: 'web' | 'mobile' | 'other';
+    category: string;
     year: string;
     image: string;
     features: string[];
     featured?: boolean;
     order?: number;
+    status?: string;
+    role?: string;
 }
 
 export interface Skill {
@@ -63,6 +65,7 @@ export interface SiteConfig {
     heroGif?: string;
     accentColor: string;
     theme: 'dark' | 'light';
+    projectCategories?: string[];
 }
 
 export interface AdminUser {

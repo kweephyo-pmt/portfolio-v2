@@ -6,59 +6,50 @@ import { usePortfolioStore } from '../../store/portfolioStore';
 import type { Project } from '../../types';
 import { CertificatesSection } from './CertificatesSection';
 
-const CATEGORIES = ['all', 'web', 'mobile'];
 
 const ProjectCard = ({ project }: { project: Project }) => {
-    const [hovered, setHovered] = useState(false);
-
     return (
         <Link
             to={`/project/${project.id}`}
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-            className={`bg-[#09090b] rounded-2xl overflow-hidden cursor-pointer flex flex-col transition-all duration-300 border ${hovered
-                ? 'border-white/20 shadow-[0_8px_30px_rgba(255,255,255,0.04)] -translate-y-1'
-                : 'border-white/5'
-                }`}
+            className="group bg-[#09090b] rounded-2xl overflow-hidden cursor-pointer flex flex-col transition-all duration-500 border border-white/5 hover:border-[#00d8ff]/30 hover:shadow-[0_20px_50px_rgba(0,216,255,0.1)] hover:-translate-y-2"
         >
-            {/* Image */}
-            <div className="relative h-[220px] overflow-hidden bg-[#09090b] transform-gpu">
+            {/* Image Container */}
+            <div className="relative h-[220px] overflow-hidden bg-black rounded-t-2xl" style={{ isolation: 'isolate', WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}>
+                {/* Inset shadow 'mask' to hide sub-pixel leaks */}
+                <div className="absolute inset-0 z-20 rounded-t-2xl pointer-events-none shadow-[inset_0_0_0_1px_#09090b]" />
+
                 <img
                     src={project.image}
                     alt={project.title}
-                    className={`w-full h-full object-cover transition-transform duration-500 ${hovered ? 'scale-105' : 'scale-100'}`}
+                    className="w-full h-full object-cover transition-transform duration-700 scale-[1.01] group-hover:scale-110"
+                    style={{
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden',
+                    }}
                     onError={(e) => {
                         (e.target as HTMLImageElement).src = `https://via.placeholder.com/800x400/12121e/58a6ff?text=${encodeURIComponent(project.title)}`;
                     }}
                 />
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent from-40% to-black/90" />
-
-                {/* Category + Year Badge */}
-                <div className="absolute top-4 left-4 flex gap-2">
-                    <span className="px-3 py-1 text-xs font-medium bg-black/60 backdrop-blur-md rounded-full capitalize text-white/90 border border-white/10 shadow-sm">
-                        {project.category}
-                    </span>
-                    <span className="px-3 py-1 text-xs font-medium bg-black/60 backdrop-blur-md rounded-full text-white/90 border border-white/10 shadow-sm">
-                        {project.year}
-                    </span>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent from-40% to-black/90 z-10" />
 
                 {/* Featured Star */}
                 {project.featured && (
-                    <div className="absolute top-4 right-4">
-                        <span className="bg-amber-500/20 border border-amber-500/30 text-amber-500 rounded-md px-2.5 py-1 text-[0.7rem] font-semibold flex items-center gap-1.5 backdrop-blur-sm">
-                            <Star size={10} fill="currentColor" /> Featured
-                        </span>
+                    <div className="absolute top-4 right-4 z-20">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-amber-500/20 blur-[8px] rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
+                            <div className="relative bg-[#09090b]/80 border border-amber-500/40 text-amber-500 rounded-full w-8 h-8 flex items-center justify-center backdrop-blur-md shadow-[0_4px_20px_rgba(245,158,11,0.15)]">
+                                <Star size={14} fill="currentColor" className="drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+                            </div>
+                        </div>
                     </div>
                 )}
 
-                {/* Hover overlay removed */}
             </div>
 
             {/* Content */}
             <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-[1.05rem] font-bold mb-2 leading-tight">
+                <h3 className="text-[1.05rem] font-bold mb-2 leading-tight group-hover:text-[#00d8ff] transition-colors">
                     {project.title}
                 </h3>
                 <p className="text-[0.85rem] text-[var(--color-text-muted)] leading-relaxed mb-5 line-clamp-2">
@@ -85,7 +76,8 @@ const ProjectCard = ({ project }: { project: Project }) => {
                         href={project.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn btn-primary btn-sm flex-1 justify-center"
+                        onClick={(e) => e.stopPropagation()}
+                        className="btn btn-primary btn-sm flex-1 justify-center relative z-20"
                     >
                         <ExternalLink size={13} />
                         Live Demo
@@ -94,7 +86,8 @@ const ProjectCard = ({ project }: { project: Project }) => {
                         href={project.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn btn-ghost btn-sm flex-1 justify-center"
+                        onClick={(e) => e.stopPropagation()}
+                        className="btn btn-ghost btn-sm flex-1 justify-center relative z-20"
                     >
                         <Github size={13} />
                         GitHub
@@ -106,8 +99,11 @@ const ProjectCard = ({ project }: { project: Project }) => {
 };
 
 export const ProjectsSection = () => {
-    const { projects, projectsLoaded } = usePortfolioStore();
+    const { projects, projectsLoaded, siteConfig } = usePortfolioStore();
     const [activeTab, setActiveTab] = useState<'projects' | 'certificates'>('projects');
+
+    // Dynamic categories from siteConfig + 'all'
+    const CATEGORIES = ['all', ...(siteConfig.projectCategories || [])];
     const [activeCategory, setActiveCategory] = useState('all');
     const [showAllProjects, setShowAllProjects] = useState(false);
 
@@ -118,7 +114,7 @@ export const ProjectsSection = () => {
     const sorted = [...filtered].sort((a, b) => (a.order || 99) - (b.order || 99));
 
     return (
-        <section id="projects" className="section">
+        <section id="projects" className="section overflow-x-hidden">
             <div className="container">
                 <div className="text-center mb-12">
                     <h2 className="text-[2.5rem] font-bold text-white tracking-tight mb-4" style={{ fontFamily: 'var(--font-display)' }}>
@@ -130,26 +126,40 @@ export const ProjectsSection = () => {
                 </div>
 
                 {/* Unified Controls Bar */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10">
+                <div className="flex flex-col items-center gap-8 mb-12">
                     {/* Main Tab Toggle */}
-                    <div className="flex bg-[#18181b] p-1 rounded-xl border border-white/5">
+                    <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10 backdrop-blur-xl shadow-2xl relative">
                         <button
                             onClick={() => setActiveTab('projects')}
-                            className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'projects'
-                                ? 'bg-[#00d8ff]/10 text-[#00d8ff]'
-                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                            className={`relative px-8 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-colors duration-300 overflow-hidden ${activeTab === 'projects'
+                                ? 'text-white'
+                                : 'text-gray-500 hover:text-white'
                                 }`}
                         >
-                            Projects
+                            {activeTab === 'projects' && (
+                                <motion.div
+                                    layoutId="activeTabIndicator"
+                                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                    className="absolute inset-0 bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6] z-0 shadow-[0_0_20px_rgba(0,216,255,0.3)]"
+                                />
+                            )}
+                            <span className="relative z-10">Projects</span>
                         </button>
                         <button
                             onClick={() => setActiveTab('certificates')}
-                            className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'certificates'
-                                ? 'bg-[#00d8ff]/10 text-[#00d8ff]'
-                                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                            className={`relative px-8 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-colors duration-300 overflow-hidden ${activeTab === 'certificates'
+                                ? 'text-white'
+                                : 'text-gray-500 hover:text-white'
                                 }`}
                         >
-                            Certifications
+                            {activeTab === 'certificates' && (
+                                <motion.div
+                                    layoutId="activeTabIndicator"
+                                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                    className="absolute inset-0 bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6] z-0 shadow-[0_0_20px_rgba(0,216,255,0.3)]"
+                                />
+                            )}
+                            <span className="relative z-10">Certifications</span>
                         </button>
                     </div>
 
@@ -157,11 +167,11 @@ export const ProjectsSection = () => {
                     <AnimatePresence>
                         {activeTab === 'projects' && (
                             <motion.div
-                                initial={{ opacity: 0, x: 10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 10 }}
-                                transition={{ duration: 0.2 }}
-                                className="flex gap-2 flex-wrap justify-center sm:justify-end"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 10 }}
+                                transition={{ duration: 0.3 }}
+                                className="flex gap-3 flex-wrap justify-center"
                             >
                                 {CATEGORIES.map((cat) => {
                                     const count = cat === 'all' ? projects.length : projects.filter(p => p.category === cat).length;
@@ -170,14 +180,14 @@ export const ProjectsSection = () => {
                                         <button
                                             key={cat}
                                             onClick={() => { setActiveCategory(cat); setShowAllProjects(false); }}
-                                            className={`relative flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 capitalize overflow-hidden group ${isActive
-                                                ? 'text-white shadow-[0_0_16px_rgba(0,216,255,0.2)]'
-                                                : 'text-gray-400 hover:text-white bg-white/5 border border-white/5 hover:border-white/10 hover:bg-white/10'
+                                            className={`relative flex items-center gap-3 px-6 py-2 rounded-full text-xs font-bold uppercase tracking-[0.15em] transition-all duration-300 overflow-hidden group border ${isActive
+                                                ? 'text-white border-transparent shadow-[0_0_20px_rgba(0,216,255,0.2)] scale-105'
+                                                : 'text-gray-500 hover:text-white bg-white/5 border-white/5 hover:border-white/10'
                                                 }`}
                                         >
                                             {isActive && <div className="absolute inset-0 bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6] z-0" />}
                                             <span className="relative z-10">{cat}</span>
-                                            <span className={`relative z-10 flex items-center justify-center min-w-[18px] h-[18px] text-[10px] font-bold rounded-full px-1 transition-colors ${isActive ? 'bg-white text-[#8b5cf6]' : 'bg-black/40 text-gray-300 group-hover:bg-black/60'
+                                            <span className={`relative z-10 flex items-center justify-center min-w-[20px] h-[20px] text-[10px] font-black rounded-full px-1 transition-all duration-300 ${isActive ? 'bg-white text-[#00d8ff]' : 'bg-white/10 text-gray-400 group-hover:bg-white/20 group-hover:text-white'
                                                 }`}>
                                                 {count}
                                             </span>
@@ -189,57 +199,76 @@ export const ProjectsSection = () => {
                     </AnimatePresence>
                 </div>
 
-                <AnimatePresence mode="wait">
-                    {activeTab === 'projects' && (
-                        <motion.div
-                            key="projects-tab"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.2 }}
-                        >
+                <div className="relative min-h-[800px] overflow-hidden">
+                    <AnimatePresence mode="wait" initial={false}>
+                        {activeTab === 'projects' && (
+                            <motion.div
+                                key="projects-tab"
+                                initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.98, y: -10 }}
+                                transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                            >
 
-                            {/* Project Grid */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
-                                {(showAllProjects ? sorted : sorted.slice(0, 6)).map((project) => (
-                                    <ProjectCard key={project.id} project={project} />
-                                ))}
-                            </div>
+                                {/* Project Grid */}
+                                <motion.div
+                                    layout
+                                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7"
+                                >
+                                    <AnimatePresence mode="popLayout">
+                                        {(showAllProjects ? sorted : sorted.slice(0, 6)).map((project) => (
+                                            <motion.div
+                                                key={project.id}
+                                                layout
+                                                initial={{ opacity: 0, scale: 0.9 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0.9 }}
+                                                transition={{
+                                                    duration: 0.4,
+                                                    ease: [0.23, 1, 0.32, 1]
+                                                }}
+                                            >
+                                                <ProjectCard project={project} />
+                                            </motion.div>
+                                        ))}
+                                    </AnimatePresence>
+                                </motion.div>
 
-                            {/* View More Button */}
-                            {sorted.length > 6 && (
-                                <div className="mt-12 flex justify-center">
-                                    <button
-                                        onClick={() => setShowAllProjects(!showAllProjects)}
-                                        className="flex items-center gap-2 px-6 py-3 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-full text-sm font-semibold text-white/80 hover:text-white hover:border-[var(--color-border-hover)] hover:bg-white/5 transition-all outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[#09090b]"
-                                    >
-                                        {showAllProjects ? 'View Less' : 'View More Projects'}
-                                        {showAllProjects ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                                    </button>
-                                </div>
-                            )}
+                                {/* View More Button */}
+                                {sorted.length > 6 && (
+                                    <div className="mt-12 flex justify-center">
+                                        <button
+                                            onClick={() => setShowAllProjects(!showAllProjects)}
+                                            className="flex items-center gap-2 px-6 py-3 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-full text-sm font-semibold text-white/80 hover:text-white hover:border-[var(--color-border-hover)] hover:bg-white/5 transition-all outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[#09090b]"
+                                        >
+                                            {showAllProjects ? 'View Less' : 'View More Projects'}
+                                            {showAllProjects ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                        </button>
+                                    </div>
+                                )}
 
-                            {(projectsLoaded && sorted.length === 0) && (
-                                <div className="text-center p-16 text-[var(--color-text-muted)]">
-                                    <Code2 size={48} className="mx-auto mb-4 opacity-30" />
-                                    <p>No projects in this category yet.</p>
-                                </div>
-                            )}
-                        </motion.div>
-                    )}
+                                {(projectsLoaded && sorted.length === 0) && (
+                                    <div className="text-center p-16 text-[var(--color-text-muted)]">
+                                        <Code2 size={48} className="mx-auto mb-4 opacity-30" />
+                                        <p>No projects in this category yet.</p>
+                                    </div>
+                                )}
+                            </motion.div>
+                        )}
 
-                    {activeTab === 'certificates' && (
-                        <motion.div
-                            key="certificates-tab"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <CertificatesSection />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                        {activeTab === 'certificates' && (
+                            <motion.div
+                                key="certificates-tab"
+                                initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.98, y: -10 }}
+                                transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                            >
+                                <CertificatesSection />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
             </div>
         </section>
     );
