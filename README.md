@@ -59,9 +59,11 @@ Navigate to `http://localhost:5173`.
 
 ---
 
-## 🔒 Accessing the Admin Panel
+### 🔒 Accessing the Admin Panel
 
 The Admin portal is securely hidden from public view. It is responsible for allowing you to edit the text, images, and projects displayed directly on the live portfolio.
+
+![Admin Dashboard Preview](public/adminpannel.png)
 
 1. Navigate to `http://your-website.com/admin`
 2. Enter your authorized Firebase User credentials.
