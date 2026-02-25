@@ -31,7 +31,7 @@ export const PortfolioPage = () => {
 
                     window.scrollTo({
                         top: offsetPosition,
-                        behavior: 'smooth'
+                        behavior: 'instant'
                     });
                 }
             }, 100);
