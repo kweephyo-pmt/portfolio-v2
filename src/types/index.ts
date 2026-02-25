@@ -44,6 +44,7 @@ export interface Certificate {
 
 export interface SiteConfig {
     name: string;
+    navbarName?: string;
     tagline: string;
     bio: string;
     aboutTitle?: string;
@@ -59,6 +60,7 @@ export interface SiteConfig {
     instagram?: string;
     resumeUrl?: string;
     profileImage?: string;
+    heroGif?: string;
     accentColor: string;
     theme: 'dark' | 'light';
 }

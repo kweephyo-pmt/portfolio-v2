@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, X, Save, GripVertical, ExternalLink } from 'lucide-react';
 import { usePortfolioStore } from '../../../store/portfolioStore';
@@ -16,15 +17,17 @@ const CertForm = ({
         onSave({ ...form, id: (form as any).id || `cert-${Date.now()}` } as Certificate);
     };
 
-    return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.97 }}
-            className="fixed inset-0 z-[200] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
+    return createPortal(
+        <div
+            className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
             onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
         >
-            <div className="bg-[#18181b] border border-white/10 rounded-2xl p-6 sm:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto text-gray-100 shadow-2xl">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.97, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.97, y: 10 }}
+                className="bg-[#18181b] border border-white/10 rounded-2xl p-6 sm:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto text-gray-100 shadow-2xl"
+            >
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold">{isNew ? 'Add Certificate' : 'Edit Certificate'}</h2>
                     <button onClick={onCancel} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"><X size={20} /></button>
@@ -32,15 +35,15 @@ const CertForm = ({
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     <div className="space-y-1">
                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Course/Certificate Title *</label>
-                        <input className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors" required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="AWS Certified Solutions Architect" />
+                        <input className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-white transition-colors" required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="AWS Certified Solutions Architect" />
                     </div>
                     <div className="space-y-1">
                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Issuer *</label>
-                        <input className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors" required value={form.issuer} onChange={e => setForm({ ...form, issuer: e.target.value })} placeholder="Amazon Web Services" />
+                        <input className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-white transition-colors" required value={form.issuer} onChange={e => setForm({ ...form, issuer: e.target.value })} placeholder="Amazon Web Services" />
                     </div>
                     <div className="space-y-1">
                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Date/Year *</label>
-                        <input className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors" required value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} placeholder="Oct 2024" />
+                        <input className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-white transition-colors" required value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} placeholder="Oct 2024" />
                     </div>
                     <div className="space-y-1">
                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Certificate Image *</label>
@@ -52,19 +55,20 @@ const CertForm = ({
                     </div>
                     <div className="space-y-1">
                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Description</label>
-                        <textarea className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors min-h-[80px]" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Short description..." />
+                        <textarea className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-white transition-colors min-h-[80px]" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Short description..." />
                     </div>
                     <div className="space-y-1">
                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Verification Link (Optional)</label>
-                        <input type="url" className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors" value={form.link} onChange={e => setForm({ ...form, link: e.target.value })} placeholder="https://..." />
+                        <input type="url" className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-white transition-colors" value={form.link} onChange={e => setForm({ ...form, link: e.target.value })} placeholder="https://..." />
                     </div>
                     <div className="flex justify-end gap-3 mt-4 border-t border-white/10 pt-6">
                         <button type="button" onClick={onCancel} className="px-5 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Cancel</button>
-                        <button type="submit" className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors shadow-lg shadow-blue-500/20"><Save size={16} />{isNew ? 'Add Certificate' : 'Save Changes'}</button>
+                        <button type="submit" className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-black bg-white hover:bg-gray-200 rounded-lg transition-colors"><Save size={16} />{isNew ? 'Add Certificate' : 'Save Changes'}</button>
                     </div>
                 </form>
-            </div>
-        </motion.div>
+            </motion.div>
+        </div>,
+        document.body
     );
 };
 
@@ -121,12 +125,12 @@ export const AdminCertificates = () => {
                     <h1 className="text-2xl font-bold mb-1">Certificates</h1>
                     <p className="text-sm text-gray-400">Manage your certifications and achievements</p>
                 </div>
-                <button onClick={() => setAddingNew(true)} className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-colors shadow-lg shadow-blue-500/20">
+                <button onClick={() => setAddingNew(true)} className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-black bg-white hover:bg-gray-200 rounded-xl transition-colors shrink-0 shadow-md">
                     <Plus size={18} /> New Certificate
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <AnimatePresence>
                     {sortedCerts.map((cert, index) => (
                         <motion.div
@@ -144,7 +148,7 @@ export const AdminCertificates = () => {
                                 <div className="flex justify-between items-start gap-4 mb-2">
                                     <h3 className="font-bold text-base truncate" title={cert.title}>{cert.title}</h3>
                                 </div>
-                                <p className="text-sm text-blue-400 mb-1 truncate">{cert.issuer}</p>
+                                <p className="text-sm text-gray-300 mb-1 truncate">{cert.issuer}</p>
                                 <p className="text-xs text-gray-500 mb-auto">{cert.date}</p>
 
                                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
@@ -154,11 +158,11 @@ export const AdminCertificates = () => {
                                     </div>
                                     <div className="flex items-center gap-1">
                                         {cert.link && (
-                                            <a href={cert.link} target="_blank" rel="noreferrer" className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors">
+                                            <a href={cert.link} target="_blank" rel="noreferrer" className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
                                                 <ExternalLink size={16} />
                                             </a>
                                         )}
-                                        <button onClick={() => setEditing(cert)} className="p-2 text-gray-400 hover:text-blue-400 hover:bg-white/5 rounded-lg transition-colors"><Pencil size={16} /></button>
+                                        <button onClick={() => setEditing(cert)} className="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"><Pencil size={16} /></button>
                                         {confirmDelete === cert.id ? (
                                             <div className="flex items-center gap-2 bg-red-500/10 px-2 h-9 rounded-lg border border-red-500/20 ml-1">
                                                 <button onClick={() => { deleteCertificate(cert.id); showToast('success', 'Deleted'); setConfirmDelete(null); }} className="text-xs font-semibold text-red-400 hover:text-red-300">Confirm Del</button>

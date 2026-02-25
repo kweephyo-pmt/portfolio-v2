@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Github, Star, Eye, Code2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ExternalLink, Github, Star, Code2, ChevronDown, ChevronUp } from 'lucide-react';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import type { Project } from '../../types';
 import { CertificatesSection } from './CertificatesSection';
@@ -11,16 +12,17 @@ const ProjectCard = ({ project }: { project: Project }) => {
     const [hovered, setHovered] = useState(false);
 
     return (
-        <div
+        <Link
+            to={`/project/${project.id}`}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            className={`bg-[var(--color-bg-card)] rounded-xl overflow-hidden cursor-pointer flex flex-col transition-all duration-300 border ${hovered
-                ? 'border-[var(--color-border-hover)] shadow-[0_0_0_1px_var(--color-border-hover),0_0_20px_var(--color-accent-glow)] -translate-y-1.5'
-                : 'border-[var(--color-border)]'
+            className={`bg-[#09090b] rounded-2xl overflow-hidden cursor-pointer flex flex-col transition-all duration-300 border ${hovered
+                ? 'border-white/20 shadow-[0_8px_30px_rgba(255,255,255,0.04)] -translate-y-1'
+                : 'border-white/5'
                 }`}
         >
             {/* Image */}
-            <div className="relative h-[220px] overflow-hidden bg-transparent">
+            <div className="relative h-[220px] overflow-hidden bg-[#09090b] transform-gpu">
                 <img
                     src={project.image}
                     alt={project.title}
@@ -51,38 +53,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
                     </div>
                 )}
 
-                {/* Hover Actions Overlay */}
-                <AnimatePresence>
-                    {hovered && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="absolute inset-0 bg-[#0d1117]/60 flex items-center justify-center gap-4 backdrop-blur-sm"
-                        >
-                            <a
-                                href={project.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-primary btn-sm"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <Eye size={14} />
-                                Live Demo
-                            </a>
-                            <a
-                                href={project.githubUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-ghost btn-sm"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <Github size={14} />
-                                Code
-                            </a>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                {/* Hover overlay removed */}
             </div>
 
             {/* Content */}
@@ -130,7 +101,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
                     </a>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 };
 
@@ -200,8 +171,8 @@ export const ProjectsSection = () => {
                                             key={cat}
                                             onClick={() => { setActiveCategory(cat); setShowAllProjects(false); }}
                                             className={`relative flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 capitalize overflow-hidden group ${isActive
-                                                    ? 'text-white shadow-[0_0_16px_rgba(0,216,255,0.2)]'
-                                                    : 'text-gray-400 hover:text-white bg-white/5 border border-white/5 hover:border-white/10 hover:bg-white/10'
+                                                ? 'text-white shadow-[0_0_16px_rgba(0,216,255,0.2)]'
+                                                : 'text-gray-400 hover:text-white bg-white/5 border border-white/5 hover:border-white/10 hover:bg-white/10'
                                                 }`}
                                         >
                                             {isActive && <div className="absolute inset-0 bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6] z-0" />}

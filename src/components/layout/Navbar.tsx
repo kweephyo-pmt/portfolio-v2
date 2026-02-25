@@ -65,7 +65,7 @@ export const Navbar = () => {
                         className="font-black text-[#00d8ff] tracking-wider text-[1.1rem] px-2 uppercase"
                         style={{ fontFamily: 'var(--font-display)' }}
                     >
-                        {siteConfig.name ? siteConfig.name.split(' ')[0] : 'LEO'}
+                        {siteConfig.navbarName || (siteConfig.name ? siteConfig.name.split(' ')[0] : 'LEO')}
                     </button>
 
                     {/* Desktop Nav */}

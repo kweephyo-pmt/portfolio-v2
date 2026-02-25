@@ -171,7 +171,7 @@ export const HeroSection = () => {
                         className="hidden md:flex flex-col items-center justify-center relative"
                     >
                         <img
-                            src="/se.gif"
+                            src={siteConfig.heroGif || '/se.gif'}
                             alt="Software Engineering Illustration"
                             className="w-[90%] max-w-[500px] object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)]"
                         />

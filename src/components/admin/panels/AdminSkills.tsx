@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, X, Save } from 'lucide-react';
 import { usePortfolioStore } from '../../../store/portfolioStore';
@@ -15,15 +16,17 @@ const SkillForm = ({
         onSave({ ...form, id: (form as any).id || `skill-${Date.now()}` } as Skill);
     };
 
-    return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.97 }}
-            className="fixed inset-0 z-[200] bg-black/70 backdrop-blur-sm flex items-center justify-center p-6"
+    return createPortal(
+        <div
+            className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-center justify-center p-6"
             onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
         >
-            <div className="bg-[#18181b] border border-white/10 rounded-2xl p-8 w-full max-w-sm max-h-[90vh] overflow-y-auto text-gray-100 shadow-2xl">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.97, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.97, y: 10 }}
+                className="bg-[#18181b] border border-white/10 rounded-2xl p-8 w-full max-w-sm max-h-[90vh] overflow-y-auto text-gray-100 shadow-2xl"
+            >
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold">{isNew ? 'Add Tech' : 'Edit Tech'}</h2>
                     <button onClick={onCancel} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"><X size={20} /></button>
@@ -31,20 +34,21 @@ const SkillForm = ({
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     <div className="space-y-1">
                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Tech Name *</label>
-                        <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="React" />
+                        <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="React" />
                     </div>
                     <div className="space-y-1">
                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Icon URL *</label>
-                        <input type="url" className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors" required value={form.icon} onChange={e => setForm({ ...form, icon: e.target.value })} placeholder="https://cdn.jsdelivr.net/gh/devicons/..." />
+                        <input type="url" className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" required value={form.icon} onChange={e => setForm({ ...form, icon: e.target.value })} placeholder="https://cdn.jsdelivr.net/gh/devicons/..." />
                         <p className="text-[10px] text-gray-500 mt-1">We recommend using DevIcon SVGs.</p>
                     </div>
                     <div className="flex justify-end gap-3 mt-4 border-t border-white/10 pt-6">
                         <button type="button" onClick={onCancel} className="px-5 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Cancel</button>
-                        <button type="submit" className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors shadow-lg"><Save size={16} />{isNew ? 'Add' : 'Save'}</button>
+                        <button type="submit" className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-black bg-white hover:bg-gray-200 rounded-lg transition-colors shadow-lg"><Save size={16} />{isNew ? 'Add' : 'Save'}</button>
                     </div>
                 </form>
-            </div>
-        </motion.div>
+            </motion.div>
+        </div>,
+        document.body
     );
 };
 
@@ -88,7 +92,7 @@ export const AdminSkills = () => {
                     <h1 className="text-2xl font-bold mb-1">Tech Stack</h1>
                     <p className="text-sm text-gray-400">{skills.length} scrolling technologies</p>
                 </div>
-                <button onClick={() => setAddingNew(true)} className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors shadow-md">
+                <button onClick={() => setAddingNew(true)} className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-black bg-white hover:bg-gray-200 rounded-lg transition-colors shadow-md">
                     <Plus size={18} /> New Tech
                 </button>
             </div>
@@ -109,7 +113,7 @@ export const AdminSkills = () => {
                             <span className="font-semibold text-sm truncate">{skill.name}</span>
                         </div>
                         <div className="flex items-center gap-1 shrink-0">
-                            <button onClick={() => setEditing(skill)} className="p-1.5 text-gray-500 hover:text-blue-400 hover:bg-white/5 rounded-lg transition-colors"><Pencil size={14} /></button>
+                            <button onClick={() => setEditing(skill)} className="p-1.5 text-gray-500 hover:text-white hover:bg-white/5 rounded-lg transition-colors"><Pencil size={14} /></button>
                             {confirmDelete === skill.id ? (
                                 <div className="flex items-center gap-2 bg-red-500/10 px-2 h-8 rounded-lg border border-red-500/20 ml-1">
                                     <button onClick={() => { deleteSkill(skill.id); showToast('success', 'Tech deleted.'); setConfirmDelete(null); }} className="text-xs font-semibold text-red-400 hover:text-red-300">Del</button>

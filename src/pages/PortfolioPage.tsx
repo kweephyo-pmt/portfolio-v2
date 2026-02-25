@@ -10,11 +10,33 @@ import { ContactSection } from '../components/sections/ContactSection';
 import { usePortfolioStore } from '../store/portfolioStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Code2 } from 'lucide-react';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export const PortfolioPage = () => {
     const { configLoaded, projectsLoaded } = usePortfolioStore();
+    const location = useLocation();
 
     const isLoaded = configLoaded && projectsLoaded;
+
+    useEffect(() => {
+        if (isLoaded && location.hash) {
+            const hashId = location.hash.replace('#', '');
+            setTimeout(() => {
+                const element = document.getElementById(hashId);
+                if (element) {
+                    const headerOffset = 80;
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 100);
+        }
+    }, [isLoaded, location.hash]);
 
     return (
         <AnimatePresence mode="wait">

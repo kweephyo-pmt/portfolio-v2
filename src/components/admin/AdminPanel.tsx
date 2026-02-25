@@ -3,36 +3,49 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
     LayoutDashboard, FolderOpen, Settings,
-    LogOut, Menu, X, Eye, ShieldAlert, Layers, Award
+    LogOut, Menu, Eye,
+    Layers, Award, ExternalLink
 } from 'lucide-react';
 import { usePortfolioStore } from '../../store/portfolioStore';
 import { useToast } from '../ui/Toast';
 
-// Sub-panels
 import { AdminDashboard } from './panels/AdminDashboard';
 import { AdminProjects } from './panels/AdminProjects';
 import { AdminSkills } from './panels/AdminSkills';
-
 import { AdminSettings } from './panels/AdminSettings';
 import { AdminCertificates } from './panels/AdminCertificates';
 
-const NAV_ITEMS = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'projects', label: 'Projects', icon: FolderOpen },
-    { id: 'skills', label: 'Tech Stack', icon: Layers },
-    { id: 'certificates', label: 'Certificates', icon: Award },
-    { id: 'settings', label: 'Settings', icon: Settings },
+const NAV_GROUPS = [
+    {
+        label: 'Overview',
+        items: [
+            { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        ],
+    },
+    {
+        label: 'Content',
+        items: [
+            { id: 'projects', label: 'Projects', icon: FolderOpen },
+            { id: 'skills', label: 'Tech Stack', icon: Layers },
+            { id: 'certificates', label: 'Certificates', icon: Award },
+        ],
+    },
+    {
+        label: 'System',
+        items: [
+            { id: 'settings', label: 'Settings', icon: Settings },
+        ],
+    },
 ];
+
+const ALL_NAV_ITEMS = NAV_GROUPS.flatMap(g => g.items);
 
 export const AdminPanel = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const activePanel = searchParams.get('tab') || 'dashboard';
+    const setActivePanel = (tab: string) => setSearchParams({ tab });
 
-    const setActivePanel = (tab: string) => {
-        setSearchParams({ tab });
-    };
-
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [collapsed, setCollapsed] = useState(false);
     const { logoutAdmin, siteConfig } = usePortfolioStore();
     const { showToast } = useToast();
     const navigate = useNavigate();
@@ -40,7 +53,7 @@ export const AdminPanel = () => {
     const handleLogout = async () => {
         await logoutAdmin();
         showToast('info', 'Logged out successfully.');
-        navigate('/', { replace: true });
+        navigate('/admin', { replace: true });
     };
 
     const renderPanel = () => {
@@ -48,146 +61,252 @@ export const AdminPanel = () => {
             case 'dashboard': return <AdminDashboard onNavigate={setActivePanel} />;
             case 'projects': return <AdminProjects />;
             case 'skills': return <AdminSkills />;
-
             case 'certificates': return <AdminCertificates />;
             case 'settings': return <AdminSettings />;
             default: return <AdminDashboard onNavigate={setActivePanel} />;
         }
     };
 
-    const activeItem = NAV_ITEMS.find((n) => n.id === activePanel);
+    const activeItem = ALL_NAV_ITEMS.find(n => n.id === activePanel);
+    const SIDEBAR_W = collapsed ? 80 : 240;
+
+    const initials = siteConfig.name
+        ? siteConfig.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+        : 'AD';
 
     return (
-        <div className="flex min-h-screen bg-[#09090b] font-sans text-gray-100 z-50 relative">
-            {/* Sidebar */}
+        <div className="flex min-h-screen text-gray-100" style={{ background: '#000000', fontFamily: 'var(--font-body, system-ui)' }}>
+
+            {/* ── Sidebar ── */}
             <motion.aside
-                animate={{ width: sidebarOpen ? '260px' : '72px' }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                className="fixed top-0 left-0 bottom-0 z-50 flex flex-col overflow-hidden bg-[#18181b] outline outline-1 outline-white/5 shadow-2xl"
+                animate={{ width: SIDEBAR_W }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                className="fixed top-0 left-0 bottom-0 z-50 flex flex-col overflow-hidden"
+                style={{
+                    background: '#09090b',
+                    borderRight: '1px solid rgba(255,255,255,0.05)',
+                    boxShadow: '4px 0 24px rgba(0,0,0,0.5)',
+                }}
             >
-                {/* Sidebar Header */}
-                <div className="flex items-center gap-3 p-4 h-[70px] border-b border-white/10 shrink-0">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg">
-                        <ShieldAlert size={20} />
+                {/* Header (Hamburger stays fixed in 80px space) */}
+                <div className="flex items-center shrink-0 h-14" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div className="w-[80px] shrink-0 flex items-center justify-center">
+                        <button
+                            onClick={() => setCollapsed(!collapsed)}
+                            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                        >
+                            <Menu size={18} />
+                        </button>
                     </div>
                     <AnimatePresence>
-                        {sidebarOpen && (
-                            <motion.div
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -10 }}
-                                transition={{ duration: 0.2 }}
-                                className="flex-1 overflow-hidden"
+                        {!collapsed && (
+                            <motion.span
+                                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                                className="font-bold text-gray-200 whitespace-nowrap overflow-hidden text-sm tracking-wide"
                             >
-                                <div className="font-bold text-sm leading-tight truncate">Admin Block</div>
-                                <div className="text-xs text-gray-400 truncate">{siteConfig.name}</div>
-                            </motion.div>
+                                Admin Panel
+                            </motion.span>
                         )}
                     </AnimatePresence>
-                    <button
-                        onClick={() => setSidebarOpen(!sidebarOpen)}
-                        className="ml-auto p-1.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
-                    >
-                        {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
-                    </button>
                 </div>
 
-                {/* Nav Items */}
-                <nav className="flex-1 px-3 py-6 flex flex-col gap-1 overflow-y-auto">
-                    {NAV_ITEMS.map((item) => {
-                        const isActive = activePanel === item.id;
-                        const Icon = item.icon;
-                        return (
-                            <button
-                                key={item.id}
-                                onClick={() => setActivePanel(item.id)}
-                                title={!sidebarOpen ? item.label : undefined}
-                                className={`flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all duration-200 w-full text-left font-medium text-sm whitespace-nowrap overflow-hidden
-                                    ${isActive
-                                        ? 'bg-blue-500/20 text-blue-400 font-semibold'
-                                        : 'text-gray-400 hover:text-white hover:bg-white/5'
-                                    }`}
-                            >
-                                <Icon size={20} className="shrink-0" />
-                                <AnimatePresence>
-                                    {sidebarOpen && (
-                                        <motion.span
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ duration: 0.15 }}
+                {/* Nav */}
+                <nav className="flex-1 py-4 overflow-y-auto overflow-x-hidden">
+                    {NAV_GROUPS.map(group => (
+                        <div key={group.label} className="mb-4">
+                            <AnimatePresence>
+                                {!collapsed && (
+                                    <motion.div
+                                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                                        className="px-4 mb-1.5"
+                                    >
+                                        <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+                                            {group.label}
+                                        </span>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                            {group.items.map(item => {
+                                const isActive = activePanel === item.id;
+                                const Icon = item.icon;
+                                return (
+                                    <div key={item.id} className="px-3 mb-0.5">
+                                        <button
+                                            onClick={() => setActivePanel(item.id)}
+                                            title={collapsed ? item.label : undefined}
+                                            className={`flex items-center w-full rounded-lg transition-all duration-150 relative text-sm font-medium
+                                                ${collapsed ? 'justify-center px-0 py-3' : 'gap-3 px-3 py-2.5'}`}
+                                            style={{
+                                                color: isActive ? '#ffffff' : '#9ca3af',
+                                                background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
+                                                fontWeight: isActive ? 600 : 400,
+                                            }}
+                                            onMouseEnter={e => { if (!isActive) { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'; (e.currentTarget as HTMLElement).style.color = '#f3f4f6'; } }}
+                                            onMouseLeave={e => { if (!isActive) { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#9ca3af'; } }}
                                         >
-                                            {item.label}
-                                        </motion.span>
-                                    )}
-                                </AnimatePresence>
-                            </button>
-                        );
-                    })}
+                                            {isActive && !collapsed && (
+                                                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 rounded-full"
+                                                    style={{ background: '#ffffff' }} />
+                                            )}
+                                            <Icon size={collapsed ? 20 : 17} className="shrink-0" />
+                                            <AnimatePresence>
+                                                {!collapsed && (
+                                                    <motion.span
+                                                        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                                                        exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
+                                                        className="whitespace-nowrap"
+                                                    >
+                                                        {item.label}
+                                                    </motion.span>
+                                                )}
+                                            </AnimatePresence>
+                                        </button>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ))}
                 </nav>
 
-                {/* Sidebar Footer */}
-                <div className="p-3 border-t border-white/10 flex flex-col gap-1">
+                {/* Footer */}
+                <div className="shrink-0 p-3" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                    {/* View site */}
                     <a
                         href="/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        title={!sidebarOpen ? 'View Portfolio' : undefined}
-                        className="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all duration-200 text-gray-400 hover:text-white hover:bg-white/5 font-medium text-sm whitespace-nowrap overflow-hidden"
+                        title={collapsed ? 'View Site' : undefined}
+                        className={`flex items-center w-full rounded-lg py-2.5 text-sm transition-colors mb-1 ${collapsed ? 'justify-center px-0' : 'gap-3 px-3'}`}
+                        style={{ color: '#9ca3af' }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'; (e.currentTarget as HTMLElement).style.color = '#f3f4f6'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#9ca3af'; }}
                     >
-                        <Eye size={20} className="shrink-0" />
+                        <ExternalLink size={collapsed ? 20 : 16} className="shrink-0" />
                         <AnimatePresence>
-                            {sidebarOpen && (
-                                <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-                                    View Live Site
+                            {!collapsed && (
+                                <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="whitespace-nowrap text-sm font-medium">
+                                    View Site
                                 </motion.span>
                             )}
                         </AnimatePresence>
                     </a>
-                    <button
-                        onClick={handleLogout}
-                        title={!sidebarOpen ? 'Logout' : undefined}
-                        className="flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all duration-200 text-red-400 hover:bg-red-500/10 hover:text-red-300 font-medium text-sm whitespace-nowrap overflow-hidden w-full text-left"
-                    >
-                        <LogOut size={20} className="shrink-0" />
-                        <AnimatePresence>
-                            {sidebarOpen && (
-                                <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-                                    Sign Out
-                                </motion.span>
-                            )}
-                        </AnimatePresence>
-                    </button>
+
+                    {/* User / sign out */}
+                    <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 10, marginTop: 4 }}>
+                        <div
+                            className={`flex items-center w-full rounded-lg py-2 ${collapsed ? 'justify-center px-0' : 'gap-3 px-3'}`}
+                        >
+                            <div
+                                title={collapsed ? 'Admin' : undefined}
+                                className="rounded-full shrink-0 flex items-center justify-center font-bold text-white relative overflow-hidden group"
+                                style={{
+                                    width: collapsed ? 34 : 28,
+                                    height: collapsed ? 34 : 28,
+                                    fontSize: collapsed ? 13 : 11,
+                                    background: '#ffffff',
+                                    color: '#000000'
+                                }}
+                            >
+                                {siteConfig.profileImage ? (
+                                    <img src={siteConfig.profileImage} alt={siteConfig.name} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                                ) : (
+                                    initials
+                                )}
+                                {/* When collapsed, you can logout by clicking the overlay on the initials */}
+                                {collapsed && (
+                                    <button
+                                        onClick={handleLogout}
+                                        title="Sign Out"
+                                        className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"
+                                    >
+                                        <LogOut size={14} className="text-white -ml-0.5" />
+                                    </button>
+                                )}
+                            </div>
+                            <AnimatePresence>
+                                {!collapsed && (
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 min-w-0 text-left">
+                                        <div className="text-sm font-semibold text-gray-300 truncate">{siteConfig.name || 'Admin'}</div>
+                                        <div className="text-xs text-gray-500">Administrator</div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                            <AnimatePresence>
+                                {!collapsed && (
+                                    <motion.button
+                                        onClick={handleLogout}
+                                        title="Sign Out"
+                                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                                        className="p-2 -mr-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors shrink-0"
+                                    >
+                                        <LogOut size={15} />
+                                    </motion.button>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </div>
                 </div>
             </motion.aside>
 
-            {/* Main Content */}
-            <main
-                className="flex-1 flex flex-col min-w-0 transition-all duration-300 min-h-screen"
-                style={{ marginLeft: sidebarOpen ? '260px' : '72px' }}
+            {/* ── Main ── */}
+            <motion.main
+                animate={{ marginLeft: SIDEBAR_W }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                className="flex-1 flex flex-col min-w-0 min-h-screen"
             >
-                {/* Top Bar */}
-                <header className="h-[70px] shrink-0 border-b border-white/5 bg-[#18181b] flex items-center px-8 gap-3 sticky top-0 z-40 shadow-sm">
-                    <h2 className="font-bold text-lg text-white">
-                        {activeItem?.label}
-                    </h2>
+                {/* Topbar */}
+                <header
+                    className="h-14 shrink-0 flex items-center justify-between px-6 sticky top-0 z-40"
+                    style={{
+                        background: 'rgba(0,0,0,0.85)',
+                        backdropFilter: 'blur(12px)',
+                        borderBottom: '1px solid rgba(255,255,255,0.05)',
+                    }}
+                >
+                    {/* Left: breadcrumb */}
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 text-sm pl-2">
+                            <span className="text-gray-600">Admin</span>
+                            <span className="text-gray-700">/</span>
+                            <span className="text-gray-200 font-medium">{activeItem?.label}</span>
+                        </div>
+                    </div>
+
+                    {/* Right actions */}
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
+                            style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)', color: '#34d399' }}>
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            Live
+                        </div>
+                        <a
+                            href="/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition-colors"
+                            style={{ border: '1px solid rgba(255,255,255,0.08)' }}
+                        >
+                            <Eye size={13} />
+                            Preview
+                        </a>
+                    </div>
                 </header>
 
-                {/* Panel Content */}
-                <div className="flex-1 p-8 overflow-x-hidden">
+                {/* Content */}
+                <div className="flex-1 p-8">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={activePanel}
-                            initial={{ opacity: 0, y: 12 }}
+                            initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -8 }}
-                            transition={{ duration: 0.25 }}
+                            exit={{ opacity: 0, y: -6 }}
+                            transition={{ duration: 0.2 }}
                         >
                             {renderPanel()}
                         </motion.div>
                     </AnimatePresence>
                 </div>
-            </main>
+            </motion.main>
         </div>
     );
 };

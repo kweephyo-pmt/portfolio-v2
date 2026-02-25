@@ -35,6 +35,7 @@ export const AdminSettings = () => {
             icon: <User size={18} />,
             fields: [
                 { key: 'name', label: 'Full Name', placeholder: 'Phyo Min Thein', type: 'text' },
+                { key: 'navbarName', label: 'Navbar Display Name', placeholder: 'e.g. Phyo, PMT, Leo...', type: 'text' },
                 { key: 'tagline', label: 'Nickname / Handle', placeholder: 'Leo', type: 'text' },
                 { key: 'heroTitle', label: 'Hero Title', placeholder: 'Full-Stack Developer', type: 'text' },
             ],
@@ -47,6 +48,7 @@ export const AdminSettings = () => {
                 { key: 'aboutTitle', label: 'About Section Heading', placeholder: "Hi, I'm Phyo Min Thein", type: 'text' },
                 { key: 'aboutMe', label: 'About Me (About Section)', placeholder: 'Tell your story...', type: 'textarea' },
                 { key: 'profileImage', label: 'Profile Image', placeholder: '', type: 'image' },
+                { key: 'heroGif', label: 'Hero GIF / Illustration URL', placeholder: 'https://... or leave blank for default', type: 'url' },
             ],
         },
         {
@@ -92,9 +94,9 @@ export const AdminSettings = () => {
 
     return (
         <div className="max-w-5xl mx-auto text-gray-100 space-y-6">
-            <div className="border-b border-white/5 pb-6">
+            <div className="pb-6" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                 <h1 className="text-2xl font-bold mb-1">Settings</h1>
-                <p className="text-sm text-gray-400">Configure your portfolio content and appearance</p>
+                <p className="text-sm text-gray-500">Configure your portfolio content and appearance</p>
             </div>
 
             <form onSubmit={handleSave} className="space-y-6">
@@ -102,10 +104,10 @@ export const AdminSettings = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-gradient-to-br from-blue-500/10 to-purple-500/5 border border-blue-500/20 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 sm:gap-8 relative overflow-hidden"
+                    className="bg-[#09090b] border border-white/5 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 sm:gap-8 relative overflow-hidden"
                 >
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-3xl font-bold text-white shrink-0 shadow-[0_0_30px_rgba(59,130,246,0.5)] border-4 border-white/5 overflow-hidden z-10">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white flex items-center justify-center text-3xl font-bold text-black shrink-0 border-4 border-black overflow-hidden z-10">
                         {form.profileImage ? (
                             <img src={form.profileImage} alt="" className="w-full h-full object-cover"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
@@ -113,7 +115,7 @@ export const AdminSettings = () => {
                     </div>
                     <div className="text-center sm:text-left z-10 flex-1">
                         <div className="text-2xl font-bold mb-1">{form.name || 'Your Name'}</div>
-                        <div className="text-blue-400 text-sm font-mono mb-2">
+                        <div className="text-gray-300 text-sm font-mono mb-2">
                             {form.heroTitle || 'Developer'}
                         </div>
                         <div className="text-gray-400 text-sm flex items-center justify-center sm:justify-start gap-1">
@@ -121,19 +123,32 @@ export const AdminSettings = () => {
                         </div>
                     </div>
                     <div className="z-10 w-full sm:w-auto mt-4 sm:mt-0">
-                        <label className={`flex flex-col sm:flex-row items-center justify-center gap-3 cursor-pointer rounded-xl px-5 py-3 transition-colors border ${form.availableForWork
-                            ? 'bg-green-500/10 border-green-500/30 hover:bg-green-500/20'
-                            : 'bg-red-500/10 border-red-500/30 hover:bg-red-500/20'
-                            }`}>
+                        <label className="flex items-center justify-center gap-3 cursor-pointer rounded-xl px-5 py-3 transition-colors border border-white/10 bg-black/40 hover:bg-white/5">
+                            {/* Toggle switch */}
+                            <div className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out ${form.availableForWork ? 'bg-white' : 'bg-white/20'}`}>
+                                <span className={`inline-block h-4 w-4 transform rounded-full bg-black shadow ring-0 transition duration-200 ease-in-out ${form.availableForWork ? 'translate-x-[18px]' : 'translate-x-[2px]'}`} />
+                            </div>
+
                             <input
                                 type="checkbox"
                                 checked={form.availableForWork}
                                 onChange={e => setForm({ ...form, availableForWork: e.target.checked })}
-                                className="w-5 h-5 rounded border-white/20 bg-[#09090b] text-green-500 focus:ring-green-500 focus:ring-offset-gray-900"
+                                className="sr-only"
                             />
-                            <span className={`text-sm font-bold ${form.availableForWork ? 'text-green-400' : 'text-red-400'}`}>
-                                {form.availableForWork ? 'Available for Work' : 'Not Available'}
-                            </span>
+
+                            <div className="flex items-center gap-2">
+                                {form.availableForWork ? (
+                                    <>
+                                        <div className="w-2 h-2 rounded-full bg-green-500" style={{ boxShadow: '0 0 10px rgba(34,197,94,0.6)' }} />
+                                        <span className="text-sm font-bold text-white">Available for Work</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="w-2 h-2 rounded-full bg-red-500" style={{ boxShadow: '0 0 10px rgba(239,68,68,0.6)' }} />
+                                        <span className="text-sm font-bold text-gray-400">Not Available</span>
+                                    </>
+                                )}
+                            </div>
                         </label>
                     </div>
                 </motion.div>
@@ -146,9 +161,10 @@ export const AdminSettings = () => {
                             initial={{ opacity: 0, y: 16 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: si * 0.07 }}
-                            className="bg-[#18181b] border border-white/5 rounded-2xl p-6 sm:p-8"
+                            className="rounded-2xl p-6 sm:p-8"
+                            style={{ background: '#09090b', border: '1px solid rgba(255,255,255,0.07)' }}
                         >
-                            <h2 className="text-lg font-bold mb-6 flex items-center gap-2 text-blue-400">
+                            <h2 className="text-base font-bold mb-6 flex items-center gap-2" style={{ color: '#ffffff' }}>
                                 {section.icon}
                                 {section.title}
                             </h2>
@@ -161,7 +177,8 @@ export const AdminSettings = () => {
                                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{field.label}</label>
                                         {field.type === 'textarea' ? (
                                             <textarea
-                                                className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors min-h-[120px] resize-y"
+                                                className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors min-h-[120px] resize-y"
+                                                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', color: '#e5e7eb' }}
                                                 value={(form as any)[field.key] || ''}
                                                 onChange={e => setForm({ ...form, [field.key]: e.target.value })}
                                                 placeholder={field.placeholder}
@@ -180,7 +197,8 @@ export const AdminSettings = () => {
                                             />
                                         ) : (
                                             <input
-                                                className="w-full bg-[#09090b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                                                className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors"
+                                                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', color: '#e5e7eb' }}
                                                 type={field.type}
                                                 value={(form as any)[field.key] || ''}
                                                 onChange={e => setForm({ ...form, [field.key]: e.target.value })}
@@ -195,7 +213,8 @@ export const AdminSettings = () => {
                 </div>
 
                 {/* Save Row */}
-                <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 bg-[#18181b] border border-white/5 rounded-2xl p-4 sm:px-6 sticky bottom-6 shadow-2xl z-40">
+                <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 rounded-2xl p-4 sm:px-6 sticky bottom-6 shadow-2xl z-40"
+                    style={{ background: '#000000', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 8px 32px rgba(0,0,0,0.6)' }}>
                     <div className="w-full sm:w-auto">
                         {!showResetConfirm ? (
                             <button
@@ -218,7 +237,8 @@ export const AdminSettings = () => {
                             </div>
                         )}
                     </div>
-                    <button type="submit" className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-colors shadow-lg shadow-blue-500/20">
+                    <button type="submit" className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-2.5 text-sm font-bold text-black rounded-xl transition-all"
+                        style={{ background: '#ffffff', boxShadow: '0 4px 20px rgba(255,255,255,0.1)' }}>
                         <Save size={18} />
                         Save Settings
                     </button>

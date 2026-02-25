@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, Reorder, useDragControls } from 'framer-motion';
 import { Plus, Pencil, Trash2, ExternalLink, Star, X, Save, GripVertical } from 'lucide-react';
 import { usePortfolioStore } from '../../../store/portfolioStore';
@@ -50,15 +51,17 @@ const ProjectForm = ({
         onSave(saved);
     };
 
-    return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.97 }}
-            className="fixed inset-0 z-[200] bg-black/70 backdrop-blur-sm flex items-center justify-center p-6"
+    return createPortal(
+        <div
+            className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-center justify-center p-6"
             onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
         >
-            <div className="bg-[#18181b] border border-white/10 rounded-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto text-gray-100 shadow-2xl">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.97, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.97, y: 10 }}
+                className="bg-[#18181b] border border-white/10 rounded-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto text-gray-100 shadow-2xl"
+            >
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold">
                         {isNew ? 'Add New Project' : 'Edit Project'}
@@ -72,11 +75,11 @@ const ProjectForm = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="col-span-1 md:col-span-2 space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Project Title *</label>
-                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors" required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="My Awesome Project" />
+                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="My Awesome Project" />
                         </div>
                         <div className="space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Category *</label>
-                            <select className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
+                            <select className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
                                 <option value="web">Web</option>
                                 <option value="mobile">Mobile</option>
                                 <option value="other">Other</option>
@@ -84,27 +87,27 @@ const ProjectForm = ({
                         </div>
                         <div className="space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Year</label>
-                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors" value={form.year} onChange={e => setForm({ ...form, year: e.target.value })} placeholder="2025" />
+                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" value={form.year} onChange={e => setForm({ ...form, year: e.target.value })} placeholder="2025" />
                         </div>
                         <div className="col-span-1 md:col-span-2 space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Tech Summary (shown as subtitle)</label>
-                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors" value={form.tech} onChange={e => setForm({ ...form, tech: e.target.value })} placeholder="React, TypeScript, Firebase" />
+                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" value={form.tech} onChange={e => setForm({ ...form, tech: e.target.value })} placeholder="React, TypeScript, Firebase" />
                         </div>
                         <div className="col-span-1 md:col-span-2 space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Description *</label>
-                            <textarea className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors min-h-[100px]" required value={form.desc} onChange={e => setForm({ ...form, desc: e.target.value })} placeholder="Describe your project..." />
+                            <textarea className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors min-h-[100px]" required value={form.desc} onChange={e => setForm({ ...form, desc: e.target.value })} placeholder="Describe your project..." />
                         </div>
                         <div className="col-span-1 md:col-span-2 space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Technologies (comma separated)</label>
-                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors" value={form.technologiesStr} onChange={e => setForm({ ...form, technologiesStr: e.target.value })} placeholder="React, TypeScript, Supabase" />
+                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" value={form.technologiesStr} onChange={e => setForm({ ...form, technologiesStr: e.target.value })} placeholder="React, TypeScript, Supabase" />
                         </div>
                         <div className="space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Live URL</label>
-                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors" type="url" value={form.url} onChange={e => setForm({ ...form, url: e.target.value })} placeholder="https://myproject.vercel.app" />
+                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" type="url" value={form.url} onChange={e => setForm({ ...form, url: e.target.value })} placeholder="https://myproject.vercel.app" />
                         </div>
                         <div className="space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">GitHub URL</label>
-                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors" type="url" value={form.githubUrl} onChange={e => setForm({ ...form, githubUrl: e.target.value })} placeholder="https://github.com/user/repo" />
+                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" type="url" value={form.githubUrl} onChange={e => setForm({ ...form, githubUrl: e.target.value })} placeholder="https://github.com/user/repo" />
                         </div>
                         <div className="col-span-1 md:col-span-2 space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Project Image *</label>
@@ -124,7 +127,7 @@ const ProjectForm = ({
                                 type="checkbox"
                                 checked={form.featured}
                                 onChange={e => setForm({ ...form, featured: e.target.checked })}
-                                className="w-5 h-5 rounded border-white/20 bg-[#09090b] text-blue-500 focus:ring-blue-500 focus:ring-offset-gray-900"
+                                className="w-5 h-5 rounded border-white/20 bg-[#09090b] text-white focus:ring-white focus:ring-offset-gray-900"
                             />
                             <label htmlFor="featured-toggle" className="text-sm font-medium text-gray-300 cursor-pointer select-none">
                                 Mark as Featured Project
@@ -136,16 +139,18 @@ const ProjectForm = ({
                         <button type="button" onClick={onCancel} className="px-5 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
                             Cancel
                         </button>
-                        <button type="submit" className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors shadow-lg">
+                        <button type="submit" className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-black bg-white hover:bg-gray-200 rounded-lg transition-colors shadow-lg">
                             <Save size={16} />
                             {isNew ? 'Save Project' : 'Save Changes'}
                         </button>
                     </div>
                 </form>
-            </div>
-        </motion.div>
+            </motion.div>
+        </div>,
+        document.body
     );
 };
+
 
 const ProjectItemAdmin = ({
     project,
@@ -211,11 +216,11 @@ const ProjectItemAdmin = ({
             {/* Actions */}
             <div className="flex items-center gap-2 sm:shrink-0 pt-2 sm:pt-0 border-t border-white/5 sm:border-none mt-2 sm:mt-0">
                 {project.url && (
-                    <a href={project.url} target="_blank" rel="noopener noreferrer" className="p-2 text-gray-400 hover:text-blue-400 hover:bg-white/5 rounded-lg transition-colors" title="Visit Live Site">
+                    <a href={project.url} target="_blank" rel="noopener noreferrer" className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors" title="Visit Live Site">
                         <ExternalLink size={16} />
                     </a>
                 )}
-                <button onClick={() => onEdit(project)} className="p-2 text-gray-400 hover:text-blue-400 hover:bg-white/5 rounded-lg transition-colors" title="Edit">
+                <button onClick={() => onEdit(project)} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors" title="Edit">
                     <Pencil size={16} />
                 </button>
                 {confirmDelete === project.id ? (
@@ -305,7 +310,7 @@ export const AdminProjects = () => {
                 </div>
                 <button
                     onClick={() => setAddingNew(true)}
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors shadow-md shrink-0"
+                    className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-black bg-white hover:bg-gray-200 rounded-lg transition-colors shadow-md shrink-0"
                 >
                     <Plus size={18} /> New Project
                 </button>
@@ -318,7 +323,7 @@ export const AdminProjects = () => {
                         key={cat}
                         onClick={() => setFilterCat(cat)}
                         className={`px-4 py-1.5 rounded-full text-xs font-semibold capitalize border transition-colors ${filterCat === cat
-                            ? 'bg-blue-500/20 text-blue-400 border-blue-500/50'
+                            ? 'bg-white text-black border-white'
                             : 'bg-transparent text-gray-400 border-white/10 hover:border-white/20 hover:text-gray-300'
                             }`}
                     >
