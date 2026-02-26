@@ -29,8 +29,6 @@ export const AboutSection = () => {
                                     src={siteConfig.profileImage || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80"}
                                     alt={siteConfig.name || "Profile"}
                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                    loading="lazy"
-                                    decoding="async"
                                     onError={(e) => { (e.target as HTMLImageElement).src = 'https://ui-avatars.com/api/?name=Phyo+Min+Thein&size=400&background=random'; }}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#110526] via-[#110526]/40 to-transparent opacity-60" />

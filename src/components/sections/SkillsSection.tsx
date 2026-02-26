@@ -47,8 +47,6 @@ export const SkillsSection = () => {
                                 src={tech.icon}
                                 alt={tech.name}
                                 className={`w-12 h-12 md:w-16 md:h-16 object-contain transition-all duration-300 opacity-80 drop-shadow-[0_0_8px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] group-hover:opacity-100 group-hover:scale-110 ${tech.name?.toLowerCase().includes('next') ? 'invert opacity-60' : ''}`}
-                                loading="lazy"
-                                decoding="async"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                             />
                         </div>
