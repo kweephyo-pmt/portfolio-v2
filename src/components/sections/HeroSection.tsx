@@ -183,6 +183,8 @@ export const HeroSection = () => {
                             src={siteConfig.heroGif || '/se.gif'}
                             alt="Software Engineering Illustration"
                             className="w-[90%] max-w-[500px] object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)]"
+                            fetchPriority="high"
+                            decoding="async"
                         />
                     </motion.div>
                 </div>

@@ -22,6 +22,8 @@ const ProjectCard = ({ project }: { project: Project }) => {
                     src={project.image}
                     alt={project.title}
                     className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
                     style={{
                         backfaceVisibility: 'hidden',
                         WebkitBackfaceVisibility: 'hidden',

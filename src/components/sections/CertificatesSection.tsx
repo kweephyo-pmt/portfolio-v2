@@ -24,6 +24,8 @@ export const CertificatesSection = () => {
                                 src={cert.imageUrl}
                                 alt={cert.title}
                                 className="w-full h-full object-contain filter drop-shadow-md group-hover:scale-105 transition-transform duration-500 rounded-md"
+                                loading="lazy"
+                                decoding="async"
                                 onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=No+Certificate+Image'; }}
                             />
                             <div className="absolute inset-0 bg-blue-900/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-opacity duration-300">
