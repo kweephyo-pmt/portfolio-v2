@@ -112,22 +112,31 @@ export const HeroSection = () => {
                             transition={{ duration: 0.6, delay: 0.45 }}
                             className="text-[1.05rem] text-gray-300 leading-[1.8] mb-10 max-w-[500px]"
                         >
-                            {siteConfig.bio ? (
-                                // Render formatted bio if the bio is exactly what's in the image natively, or just render the string
-                                siteConfig.bio.includes('Software Engineering student') ? (
-                                    <>
-                                        Software Engineering student with expertise in <span className="text-[#00d8ff]">full-stack development</span>, and <span className="text-[#8b5cf6]">DevOps</span>.
-                                        Delivering innovative solutions through modern technology stacks.
-                                    </>
-                                ) : (
-                                    siteConfig.bio
-                                )
-                            ) : (
-                                <>
-                                    Software Engineering student with expertise in <span className="text-[#00d8ff]">full-stack development</span>, and <span className="text-[#8b5cf6]">DevOps</span>.
-                                    Delivering innovative solutions through modern technology stacks.
-                                </>
-                            )}
+                            {(() => {
+                                const bioText = siteConfig.bio || '';
+                                // Robust regex to catch almost any tech role or keyword 
+                                // (Software Engineering, Front-end, Full-stack, DevOps, UI/UX, Mobile App, etc.)
+                                const roleRegex = /(software engineer(?:ing)?|full-?stack(?: development| developer)?|front-?end(?: development| developer)?|back-?end(?: development| developer)?|devops|mobile(?: development| developer| app)?|web(?: development| developer)?|ui\/ux|artificial intelligence|machine learning|ai\/ml|data science|data scientist)/i;
+
+                                const parts = bioText.split(roleRegex);
+
+                                return parts.map((part, index) => {
+                                    if (!part) return null;
+
+                                    // split() puts capturing groups at odd indexes (1, 3, 5...)
+                                    if (index % 2 === 1) {
+                                        const lower = part.toLowerCase();
+                                        // Give DevOps / Backend / AI related roles a purple color, others cyan
+                                        const isPurple = lower.includes('devops') || lower.includes('back') || lower.includes('ui/') || lower.includes('machine') || lower.includes('ai') || lower.includes('data');
+                                        const color = isPurple ? 'text-[#8b5cf6]' : 'text-[#00d8ff]';
+
+                                        return <span key={index} className={`${color} font-medium`}>{part}</span>;
+                                    }
+
+                                    // Regular text
+                                    return <span key={index}>{part}</span>;
+                                });
+                            })()}
                         </motion.p>
 
                         {/* CTA Buttons */}

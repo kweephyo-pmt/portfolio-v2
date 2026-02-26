@@ -113,8 +113,11 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
                 if (snapshot.exists()) {
                     set({ siteConfig: snapshot.data() as SiteConfig, configLoaded: true });
                 } else {
-                    // Seed initial config if it doesn't exist
-                    safeFbCall(() => setDoc(doc(db, 'config', 'siteConfig'), defaultSiteConfig));
+                    if (snapshot.metadata.fromCache === false) {
+                        // Seed initial config if it doesn't exist on the server
+                        safeFbCall(() => setDoc(doc(db, 'config', 'siteConfig'), defaultSiteConfig));
+                    }
+                    // Always set loaded to true so we don't freeze the app if cache is empty
                     set({ configLoaded: true });
                 }
             }, (err) => {

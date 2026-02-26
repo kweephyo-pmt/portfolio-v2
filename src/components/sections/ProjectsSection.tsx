@@ -57,14 +57,14 @@ const ProjectCard = ({ project }: { project: Project }) => {
                 </p>
 
                 {/* Tech Stack */}
-                <div className="flex flex-wrap gap-1.5 mb-5 min-h-[2.5rem]">
+                <div className="flex flex-wrap items-center content-start gap-1.5 mb-5 min-h-[2.5rem]">
                     {project.technologies.slice(0, 4).map((tech) => (
-                        <span key={tech} className="px-2.5 py-0.5 rounded-md text-[0.7rem] font-medium bg-[rgba(88,166,255,0.08)] text-[var(--color-text-muted)] border border-[rgba(88,166,255,0.12)]">
+                        <span key={tech} className="px-2.5 py-1 rounded-md text-[0.7rem] font-medium border border-[rgba(88,166,255,0.12)]" style={{ backgroundColor: 'rgba(88,166,255,0.08)', color: 'var(--color-text-muted)' }}>
                             {tech}
                         </span>
                     ))}
                     {project.technologies.length > 4 && (
-                        <span className="px-2.5 py-0.5 rounded-md text-[0.7rem] text-[var(--color-accent)]">
+                        <span className="text-[0.7rem] font-medium text-[var(--color-accent)] ml-1">
                             +{project.technologies.length - 4}
                         </span>
                     )}
