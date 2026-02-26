@@ -10,14 +10,20 @@ import { ContactSection } from '../components/sections/ContactSection';
 import { usePortfolioStore } from '../store/portfolioStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Code2 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 export const PortfolioPage = () => {
     const { configLoaded, projectsLoaded, siteConfig } = usePortfolioStore();
     const location = useLocation();
 
-    const isLoaded = configLoaded && projectsLoaded;
+    const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+    useEffect(() => {
+        const t = setTimeout(() => setMinTimeElapsed(true), 1500);
+        return () => clearTimeout(t);
+    }, []);
+
+    const isLoaded = configLoaded && projectsLoaded && minTimeElapsed;
 
     useEffect(() => {
         if (isLoaded && location.hash) {
