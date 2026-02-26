@@ -29,14 +29,14 @@ export function LoadingScreen({ name, minMs = 1500 }: Props) {
             key="loader"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
+            exit={{ opacity: 0, y: -20, scale: 0.98 }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
             className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0a0a0a]"
+            style={{
+                // Performant radial gradient instead of expensive CSS blur filters
+                backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05) 0%, rgba(6, 182, 212, 0.03) 30%, transparent 60%)'
+            }}
         >
-            {/* Ambient Background Glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[300px] bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none delay-500" />
-
             {/* Terminal Window & Header Wrapper */}
             <motion.div
                 initial={{ scale: 0.95, opacity: 0, y: 15 }}
@@ -91,7 +91,7 @@ export function LoadingScreen({ name, minMs = 1500 }: Props) {
                 </div>
 
                 {/* Terminal Body */}
-                <div className="bg-[#0c0c0c] w-full border border-[#333333] rounded-b-xl p-4 sm:p-6 min-h-[260px] sm:min-h-[320px] font-mono text-[0.7rem] sm:text-[0.85rem] leading-relaxed relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                <div className="bg-[#0c0c0c] w-full border border-[#333333] rounded-b-xl p-4 sm:p-6 min-h-[260px] sm:min-h-[320px] font-mono text-[0.7rem] sm:text-[0.85rem] leading-relaxed relative overflow-hidden shadow-2xl">
                     <div className="flex flex-col gap-2 sm:gap-2.5">
                         {LINES.map((line, i) => (
                             <motion.div
@@ -136,7 +136,7 @@ export function LoadingScreen({ name, minMs = 1500 }: Props) {
                     {/* Progress Bar inside terminal */}
                     <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#1a1a1a]">
                         <motion.div
-                            className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 shadow-[0_0_12px_rgba(99,102,241,0.8)]"
+                            className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"
                             initial={{ width: '0%' }}
                             animate={{ width: '100%' }}
                             transition={{ duration: minMs / 1000, ease: "easeInOut" }}
