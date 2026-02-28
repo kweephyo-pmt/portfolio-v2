@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, Reorder, useDragControls } from 'framer-motion';
 import { Plus, Pencil, Trash2, ExternalLink, Star, X, Save, GripVertical } from 'lucide-react';
@@ -174,6 +174,7 @@ const ProjectItemAdmin = ({
     setConfirmDelete,
     onDragEnd,
     disableDrag = false,
+    containerRef,
 }: {
     project: Project;
     onEdit: (p: Project) => void;
@@ -182,6 +183,7 @@ const ProjectItemAdmin = ({
     setConfirmDelete: (id: string | null) => void;
     onDragEnd: () => void;
     disableDrag?: boolean;
+    containerRef?: React.RefObject<HTMLUListElement | null>;
 }) => {
     const controls = useDragControls();
 
@@ -191,6 +193,8 @@ const ProjectItemAdmin = ({
             id={project.id}
             dragListener={false}
             dragControls={controls}
+            dragConstraints={containerRef}
+            dragElastic={0.1}
             onDragEnd={onDragEnd}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -274,6 +278,7 @@ export const AdminProjects = () => {
     const [addingNew, setAddingNew] = useState(false);
     const [filterCat, setFilterCat] = useState('all');
     const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+    const containerRef = useRef<HTMLUListElement>(null);
 
     const filtered = filterCat === 'all' ? projects : projects.filter(p => p.category === filterCat);
     const sorted = [...filtered].sort((a, b) => (a.order || 99) - (b.order || 99));
@@ -363,11 +368,12 @@ export const AdminProjects = () => {
 
             {/* Project List */}
             <div className="flex flex-col gap-3">
-                <Reorder.Group axis="y" values={localProjects} onReorder={setLocalProjects} className="flex flex-col gap-3 pb-8">
+                <Reorder.Group ref={containerRef} axis="y" values={localProjects} onReorder={setLocalProjects} className="flex flex-col gap-3 pb-8">
                     {localProjects.map((project) => (
                         <ProjectItemAdmin
                             key={project.id}
                             project={project}
+                            containerRef={containerRef}
                             onEdit={setEditing}
                             onDelete={handleDelete}
                             confirmDelete={confirmDelete}
