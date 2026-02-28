@@ -70,6 +70,8 @@
 html {
   overflow-x: hidden;
   overflow-y: scroll;
+  color-scheme: dark;
+  overscroll-behavior: none;
 }
 
 body {
@@ -80,6 +82,7 @@ body {
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */

@@ -59,20 +59,20 @@ const ProjectForm = ({
 
     return createPortal(
         <div
-            className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-center justify-center p-6"
+            className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
             onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
         >
             <motion.div
-                initial={{ opacity: 0, scale: 0.97, y: 10 }}
+                initial={{ opacity: 0, scale: 0.95, y: 15 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.97, y: 10 }}
-                className="bg-[#18181b] border border-white/10 rounded-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto text-gray-100 shadow-2xl"
+                exit={{ opacity: 0, scale: 0.95, y: 15 }}
+                className="bg-[#111113] border border-white/10 rounded-3xl p-6 sm:p-8 w-full max-w-3xl max-h-[90vh] overflow-y-auto text-gray-100 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative"
             >
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold">
-                        {isNew ? 'Add New Project' : 'Edit Project'}
+                <div className="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
+                    <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+                        {isNew ? 'Create New Project' : 'Edit Project Details'}
                     </h2>
-                    <button onClick={onCancel} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                    <button onClick={onCancel} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-all bg-white/5">
                         <X size={20} />
                     </button>
                 </div>
@@ -149,12 +149,12 @@ const ProjectForm = ({
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3 mt-4 border-t border-white/10 pt-6">
-                        <button type="button" onClick={onCancel} className="px-5 py-2.5 text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+                    <div className="flex justify-end gap-3 mt-8 border-t border-white/5 pt-6 sticky bottom-0 bg-[#111113]/90 backdrop-blur-md py-4 -mx-2 px-2 -mb-2">
+                        <button type="button" onClick={onCancel} className="px-6 py-2.5 text-sm font-bold text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all">
                             Cancel
                         </button>
-                        <button type="submit" className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-black bg-white hover:bg-gray-200 rounded-lg transition-colors shadow-lg">
-                            <Save size={16} />
+                        <button type="submit" className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-black bg-white hover:bg-gray-200 rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] hover:-translate-y-0.5">
+                            <Save size={18} />
                             {isNew ? 'Save Project' : 'Save Changes'}
                         </button>
                     </div>
@@ -172,7 +172,8 @@ const ProjectItemAdmin = ({
     onDelete,
     confirmDelete,
     setConfirmDelete,
-    onDragEnd
+    onDragEnd,
+    disableDrag = false,
 }: {
     project: Project;
     onEdit: (p: Project) => void;
@@ -180,6 +181,7 @@ const ProjectItemAdmin = ({
     confirmDelete: string | null;
     setConfirmDelete: (id: string | null) => void;
     onDragEnd: () => void;
+    disableDrag?: boolean;
 }) => {
     const controls = useDragControls();
 
@@ -193,59 +195,70 @@ const ProjectItemAdmin = ({
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97 }}
-            layout
-            transition={{ type: "spring", stiffness: 300, damping: 30, mass: 1 }}
+            layout="position"
+            transition={{ type: "spring", stiffness: 200, damping: 25, mass: 0.8 }}
             whileDrag={{ scale: 1.02, zIndex: 50, cursor: "grabbing" }}
-            className="group flex flex-col sm:flex-row sm:items-center gap-4 bg-[#18181b] border border-white/5 hover:border-white/10 rounded-xl p-4 transition-all relative z-0 select-none"
+            className="group flex flex-col sm:flex-row sm:items-center gap-4 bg-white/[0.02] hover:bg-white/[0.04] border border-white/5 hover:border-white/10 rounded-2xl p-4 transition-colors duration-300 relative z-0 select-none"
         >
             {/* Drag Handle */}
-            <div
-                className="hidden sm:flex items-center justify-center p-2 text-gray-500 hover:text-white cursor-grab active:cursor-grabbing transition-colors shrink-0"
-                onPointerDown={(e) => controls.start(e)}
-                style={{ touchAction: "none" }}
-            >
-                <GripVertical size={20} />
-            </div>
+            {!disableDrag && (
+                <div
+                    className="absolute top-4 right-4 sm:static sm:top-auto sm:right-auto flex items-center justify-center p-2 text-white/50 bg-black/40 sm:bg-transparent sm:text-gray-500 hover:text-white cursor-grab active:cursor-grabbing transition-colors shrink-0 rounded-lg z-10 hover:bg-white/5"
+                    onPointerDown={(e) => controls.start(e)}
+                    style={{ touchAction: "none" }}
+                >
+                    <GripVertical size={20} />
+                </div>
+            )}
 
             {/* Image */}
-            <div className="w-full sm:w-20 h-32 sm:h-14 rounded-lg overflow-hidden shrink-0 bg-[#09090b] border border-white/5">
-                <img src={project.image} alt={project.title} className="w-full h-full object-cover"
+            <div className="w-full sm:w-28 h-40 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-[#09090b] border border-white/5 shadow-inner">
+                <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
             </div>
 
             {/* Info */}
-            <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold text-base truncate">{project.title}</h3>
-                    {project.featured && <Star size={14} className="text-amber-500 fill-amber-500 drop-shadow-md" />}
+            <div className="flex-1 min-w-0 pr-2">
+                <div className="flex items-center gap-3 mb-1.5">
+                    <h3 className="font-bold text-lg text-white truncate group-hover:text-blue-400 transition-colors">{project.title}</h3>
+                    {project.featured && (
+                        <span className="px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-md flex items-center gap-1">
+                            <Star size={10} className="fill-amber-500" /> Featured
+                        </span>
+                    )}
                 </div>
-                <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                    <span className="px-2 py-0.5 rounded-md bg-white/5 font-medium text-gray-400 capitalize border border-white/5">{project.category}</span>
-                    <span>{project.year}</span>
-                    <span className="text-gray-600">•</span>
-                    <span className="truncate max-w-[200px] lg:max-w-sm">{project.technologies.slice(0, 3).join(', ')}{project.technologies.length > 3 ? '...' : ''}</span>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-gray-500 font-medium">
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white/5 border border-white/5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                        <span className="text-gray-300 capitalize">{project.category}</span>
+                    </div>
+                    <span className="flex items-center gap-1"><span className="text-gray-600">Year:</span> {project.year}</span>
+                    <span className="text-gray-600 hidden sm:inline">•</span>
+                    <span className="truncate max-w-[200px] lg:max-w-sm text-gray-400">
+                        {project.technologies.slice(0, 3).join(', ')}{project.technologies.length > 3 ? '...' : ''}
+                    </span>
                 </div>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-2 sm:shrink-0 pt-2 sm:pt-0 border-t border-white/5 sm:border-none mt-2 sm:mt-0">
+            <div className="flex items-center gap-2 sm:gap-1.5 sm:shrink-0 pt-3 sm:pt-0 border-t border-white/5 sm:border-none mt-3 sm:mt-0">
                 {project.url && (
-                    <a href={project.url} target="_blank" rel="noopener noreferrer" className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors" title="Visit Live Site">
-                        <ExternalLink size={16} />
+                    <a href={project.url} target="_blank" rel="noopener noreferrer" className="p-2.5 sm:p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all" title="Visit Live Site">
+                        <ExternalLink size={18} />
                     </a>
                 )}
-                <button onClick={() => onEdit(project)} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors" title="Edit">
-                    <Pencil size={16} />
+                <button onClick={() => onEdit(project)} className="p-2.5 sm:p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all" title="Edit">
+                    <Pencil size={18} />
                 </button>
                 {confirmDelete === project.id ? (
-                    <div className="flex items-center gap-2 bg-red-500/10 px-2 py-1 rounded-lg border border-red-500/20">
-                        <button onClick={() => onDelete(project.id)} className="text-xs font-semibold text-red-400 hover:text-red-300 px-2">Delete</button>
+                    <div className="flex items-center gap-2 bg-red-500/10 px-3 py-1.5 rounded-lg border border-red-500/20 ml-1">
+                        <button onClick={() => onDelete(project.id)} className="text-xs font-bold text-red-400 hover:text-red-300 transition-colors">Confirm</button>
                         <div className="w-px h-3 bg-red-500/30"></div>
-                        <button onClick={() => setConfirmDelete(null)} className="text-xs font-semibold text-gray-400 hover:text-gray-300 px-2">Cancel</button>
+                        <button onClick={() => setConfirmDelete(null)} className="text-xs font-semibold text-gray-400 hover:text-gray-300 transition-colors">Cancel</button>
                     </div>
                 ) : (
-                    <button onClick={() => setConfirmDelete(project.id)} className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors" title="Delete">
-                        <Trash2 size={16} />
+                    <button onClick={() => setConfirmDelete(project.id)} className="p-2.5 sm:p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20 rounded-lg transition-all" title="Delete">
+                        <Trash2 size={18} />
                     </button>
                 )}
             </div>
@@ -316,29 +329,31 @@ export const AdminProjects = () => {
     }
 
     return (
-        <div className="max-w-6xl mx-auto text-gray-100 space-y-6">
+        <div className="max-w-6xl mx-auto text-gray-100 space-y-8">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/5 pb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 relative">
+                {/* Decorative underline */}
+                <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-white/10 via-white/5 to-transparent"></div>
                 <div>
-                    <h1 className="text-2xl font-bold mb-1">Projects</h1>
-                    <p className="text-sm text-gray-400">{projects.length} total projects in your portfolio</p>
+                    <h1 className="text-3xl font-bold mb-2 text-white">Project Manager</h1>
+                    <p className="text-sm text-gray-400 font-medium">{projects.length} total projects in your portfolio</p>
                 </div>
                 <button
                     onClick={() => setAddingNew(true)}
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-black bg-white hover:bg-gray-200 rounded-lg transition-colors shadow-md shrink-0"
+                    className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-black bg-white hover:bg-gray-200 rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] shrink-0 hover:-translate-y-0.5"
                 >
                     <Plus size={18} /> New Project
                 </button>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2.5 bg-white/[0.02] p-2 rounded-2xl border border-white/5 w-fit">
                 {categories.map(cat => (
                     <button
                         key={cat}
                         onClick={() => setFilterCat(cat)}
-                        className={`px-4 py-1.5 rounded-full text-xs font-semibold capitalize border transition-colors ${filterCat === cat
-                            ? 'bg-white text-black border-white'
-                            : 'bg-transparent text-gray-400 border-white/10 hover:border-white/20 hover:text-gray-300'
+                        className={`px-5 py-2 rounded-xl text-xs font-bold capitalize transition-all duration-300 ${filterCat === cat
+                            ? 'bg-blue-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                            : 'bg-transparent text-gray-400 hover:text-white hover:bg-white/5'
                             }`}
                     >
                         {cat}
@@ -349,19 +364,18 @@ export const AdminProjects = () => {
             {/* Project List */}
             <div className="flex flex-col gap-3">
                 <Reorder.Group axis="y" values={localProjects} onReorder={setLocalProjects} className="flex flex-col gap-3 pb-8">
-                    <AnimatePresence>
-                        {localProjects.map((project) => (
-                            <ProjectItemAdmin
-                                key={project.id}
-                                project={project}
-                                onEdit={setEditing}
-                                onDelete={handleDelete}
-                                confirmDelete={confirmDelete}
-                                setConfirmDelete={setConfirmDelete}
-                                onDragEnd={handleDragEnd}
-                            />
-                        ))}
-                    </AnimatePresence>
+                    {localProjects.map((project) => (
+                        <ProjectItemAdmin
+                            key={project.id}
+                            project={project}
+                            onEdit={setEditing}
+                            onDelete={handleDelete}
+                            confirmDelete={confirmDelete}
+                            setConfirmDelete={setConfirmDelete}
+                            onDragEnd={handleDragEnd}
+                            disableDrag={filterCat !== 'all'}
+                        />
+                    ))}
                 </Reorder.Group>
 
                 {sorted.length === 0 && (
