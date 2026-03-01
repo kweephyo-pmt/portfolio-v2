@@ -3,6 +3,7 @@ import { ToastProvider } from './components/ui/Toast';
 import { PortfolioPage } from './pages/PortfolioPage';
 import { AdminPage } from './pages/AdminPage';
 import { ProjectDetailsPage } from './pages/ProjectDetailsPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { usePortfolioStore } from './store/portfolioStore';
 import { useEffect } from 'react';
 import './index.css';
@@ -20,6 +21,7 @@ function App() {
           <Route path="/project/:id" element={<ProjectDetailsPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/*" element={<AdminPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </ToastProvider>
     </BrowserRouter>
