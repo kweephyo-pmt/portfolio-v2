@@ -17,6 +17,7 @@ const EMPTY_PROJECT: Omit<Project, 'id'> = {
     category: '',
     year: new Date().getFullYear().toString(),
     image: '',
+    videoUrl: '',
     features: [],
     featured: false,
     order: 999,
@@ -130,6 +131,10 @@ const ProjectForm = ({
                                 onChange={(url) => setForm({ ...form, image: url })}
                                 uploadPreset="projects"
                             />
+                        </div>
+                        <div className="col-span-1 md:col-span-2 space-y-1">
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Video Demo URL (optional)</label>
+                            <input className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-white transition-colors" type="url" value={form.videoUrl || ''} onChange={e => setForm({ ...form, videoUrl: e.target.value })} placeholder="https://example.com/demo.mp4 or YouTube URL" />
                         </div>
                         <div className="col-span-1 md:col-span-2 space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Features (one per line)</label>

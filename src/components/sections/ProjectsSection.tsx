@@ -11,12 +11,12 @@ const ProjectCard = ({ project }: { project: Project }) => {
     return (
         <Link
             to={`/project/${project.id}`}
-            className="group h-full bg-[#09090b] rounded-2xl overflow-hidden cursor-pointer flex flex-col transition-all duration-500 border border-white/5 hover:border-[#00d8ff]/30 hover:shadow-[0_20px_50px_rgba(0,216,255,0.1)] hover:-translate-y-2"
+            className="group h-full bg-white/[0.02] hover:bg-white/[0.04] rounded-3xl overflow-hidden cursor-pointer flex flex-col transition-all duration-500 border border-white/5 hover:border-white/10 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:-translate-y-2 relative"
         >
             {/* Image Container */}
-            <div className="relative h-[220px] overflow-hidden bg-black rounded-t-2xl" style={{ isolation: 'isolate', WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}>
+            <div className="relative h-[220px] overflow-hidden bg-black/40 rounded-t-3xl border-b border-white/5" style={{ isolation: 'isolate', WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}>
                 {/* Inset shadow 'mask' to hide sub-pixel leaks */}
-                <div className="absolute inset-0 z-20 rounded-t-2xl pointer-events-none shadow-[inset_0_0_0_1px_#09090b]" />
+                <div className="absolute inset-0 z-20 rounded-t-3xl pointer-events-none shadow-[inset_0_0_0_1px_rgba(255,255,255,0.02)]" />
 
                 <img
                     src={project.image}
@@ -38,7 +38,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
                     <div className="absolute top-4 right-4 z-20">
                         <div className="relative">
                             <div className="absolute inset-0 bg-amber-500/20 blur-[8px] rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
-                            <div className="relative bg-[#09090b]/80 border border-amber-500/40 text-amber-500 rounded-full w-8 h-8 flex items-center justify-center backdrop-blur-md shadow-[0_4px_20px_rgba(245,158,11,0.15)]">
+                            <div className="relative bg-black/60 border border-amber-500/40 text-amber-500 rounded-full w-8 h-8 flex items-center justify-center backdrop-blur-md shadow-[0_4px_20px_rgba(245,158,11,0.15)]">
                                 <Star size={14} fill="currentColor" className="drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
                             </div>
                         </div>
@@ -49,22 +49,22 @@ const ProjectCard = ({ project }: { project: Project }) => {
 
             {/* Content */}
             <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-[1.05rem] font-bold mb-2 leading-tight group-hover:text-[#00d8ff] transition-colors line-clamp-2 min-h-[2.1rem]">
+                <h3 className="text-[1.1rem] font-bold mb-2 leading-tight group-hover:text-blue-400 transition-colors line-clamp-2 min-h-[2.1rem] text-white">
                     {project.title}
                 </h3>
-                <p className="text-[0.85rem] text-[var(--color-text-muted)] leading-relaxed mb-5 line-clamp-2">
+                <p className="text-[0.85rem] text-gray-400 font-medium leading-relaxed mb-5 line-clamp-2">
                     {project.desc}
                 </p>
 
                 {/* Tech Stack */}
                 <div className="flex flex-wrap items-center content-start gap-1.5 mb-5 min-h-[2.5rem]">
                     {project.technologies.slice(0, 4).map((tech) => (
-                        <span key={tech} className="px-2.5 py-1 rounded-md text-[0.7rem] font-medium border border-[rgba(88,166,255,0.12)]" style={{ backgroundColor: 'rgba(88,166,255,0.08)', color: 'var(--color-text-muted)' }}>
+                        <span key={tech} className="px-2.5 py-1 rounded-lg text-[0.7rem] font-bold border border-white/5 bg-white/[0.03] text-gray-300">
                             {tech}
                         </span>
                     ))}
                     {project.technologies.length > 4 && (
-                        <span className="text-[0.7rem] font-medium text-[var(--color-accent)] ml-1">
+                        <span className="text-[0.7rem] font-bold text-gray-400 ml-1">
                             +{project.technologies.length - 4}
                         </span>
                     )}
@@ -77,9 +77,9 @@ const ProjectCard = ({ project }: { project: Project }) => {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="btn btn-primary btn-sm flex-1 justify-center relative z-20"
+                        className="flex-1 flex justify-center items-center gap-2 py-2 rounded-xl text-xs font-bold bg-white text-black hover:bg-gray-200 transition-colors relative z-20 shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                     >
-                        <ExternalLink size={13} />
+                        <ExternalLink size={14} />
                         Live Demo
                     </a>
                     <a
@@ -87,9 +87,9 @@ const ProjectCard = ({ project }: { project: Project }) => {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="btn btn-ghost btn-sm flex-1 justify-center relative z-20"
+                        className="flex-1 flex justify-center items-center gap-2 py-2 rounded-xl text-xs font-bold bg-white/[0.04] text-gray-300 border border-white/10 hover:bg-white/[0.08] hover:text-white transition-colors relative z-20"
                     >
-                        <Github size={13} />
+                        <Github size={14} />
                         GitHub
                     </a>
                 </div>
@@ -116,11 +116,11 @@ export const ProjectsSection = () => {
     return (
         <section id="projects" className="section overflow-x-hidden">
             <div className="container">
-                <div className="text-center mb-12">
-                    <h2 className="text-[2.5rem] font-bold text-white tracking-tight mb-4" style={{ fontFamily: 'var(--font-display)' }}>
-                        Portfolio <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6]">Showcase</span>
+                <div className="text-center mb-12 relative z-10">
+                    <h2 className="text-[2.5rem] md:text-[3rem] font-black text-white tracking-tight mb-4" style={{ fontFamily: 'var(--font-display)' }}>
+                        Portfolio <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">Showcase</span>
                     </h2>
-                    <p className="text-[var(--color-text-dim)] max-w-2xl mx-auto">
+                    <p className="text-gray-400 font-medium max-w-2xl mx-auto text-sm md:text-base">
                         Explore my journey through projects, certifications, and technical expertise. Each section represents a milestone in my continuous learning path.
                     </p>
                 </div>
@@ -140,7 +140,7 @@ export const ProjectsSection = () => {
                                 <motion.div
                                     layoutId="activeTabIndicator"
                                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                    className="absolute inset-0 bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6] z-0 shadow-[0_0_20px_rgba(0,216,255,0.3)]"
+                                    className="absolute inset-0 bg-white/10 border border-white/10 rounded-xl z-0 shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                                 />
                             )}
                             <span className="relative z-10">Projects</span>
@@ -156,7 +156,7 @@ export const ProjectsSection = () => {
                                 <motion.div
                                     layoutId="activeTabIndicator"
                                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                    className="absolute inset-0 bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6] z-0 shadow-[0_0_20px_rgba(0,216,255,0.3)]"
+                                    className="absolute inset-0 bg-white/10 border border-white/10 rounded-xl z-0 shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                                 />
                             )}
                             <span className="relative z-10">Certifications</span>
@@ -181,13 +181,13 @@ export const ProjectsSection = () => {
                                             key={cat}
                                             onClick={() => { setActiveCategory(cat); setShowAllProjects(false); }}
                                             className={`relative flex items-center gap-3 px-6 py-2 rounded-full text-xs font-bold uppercase tracking-[0.15em] transition-all duration-300 overflow-hidden group border ${isActive
-                                                ? 'text-white border-transparent shadow-[0_0_20px_rgba(0,216,255,0.2)] scale-105'
-                                                : 'text-gray-500 hover:text-white bg-white/5 border-white/5 hover:border-white/10'
+                                                ? 'text-white border-white/20 bg-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)] scale-105'
+                                                : 'text-gray-500 hover:text-white bg-white/[0.02] border-white/5 hover:border-white/10'
                                                 }`}
                                         >
-                                            {isActive && <div className="absolute inset-0 bg-gradient-to-r from-[#00d8ff] to-[#8b5cf6] z-0" />}
+                                            {isActive && <div className="absolute inset-0 bg-white/5 z-0" />}
                                             <span className="relative z-10">{cat}</span>
-                                            <span className={`relative z-10 flex items-center justify-center min-w-[20px] h-[20px] text-[10px] font-black rounded-full px-1 transition-all duration-300 ${isActive ? 'bg-white text-[#00d8ff]' : 'bg-white/10 text-gray-400 group-hover:bg-white/20 group-hover:text-white'
+                                            <span className={`relative z-10 flex items-center justify-center min-w-[20px] h-[20px] text-[10px] font-black rounded-full px-1 transition-all duration-300 ${isActive ? 'bg-white text-black' : 'bg-black/40 text-gray-400 group-hover:bg-white/20 group-hover:text-white'
                                                 }`}>
                                                 {count}
                                             </span>
@@ -212,6 +212,7 @@ export const ProjectsSection = () => {
 
                                 {/* Project Grid */}
                                 <motion.div
+                                    id="projects-grid"
                                     layout
                                     className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7"
                                 >
@@ -238,8 +239,17 @@ export const ProjectsSection = () => {
                                 {sorted.length > 6 && (
                                     <div className="mt-12 flex justify-center">
                                         <button
-                                            onClick={() => setShowAllProjects(!showAllProjects)}
-                                            className="flex items-center gap-2 px-6 py-3 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-full text-sm font-semibold text-white/80 hover:text-white hover:border-[var(--color-border-hover)] hover:bg-white/5 transition-all outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[#09090b]"
+                                            onClick={() => {
+                                                if (showAllProjects) {
+                                                    const grid = document.getElementById('projects-grid');
+                                                    if (grid) {
+                                                        const y = grid.getBoundingClientRect().top + window.scrollY - 100;
+                                                        window.scrollTo({ top: y, behavior: 'smooth' });
+                                                    }
+                                                }
+                                                setShowAllProjects(!showAllProjects);
+                                            }}
+                                            className="flex items-center gap-2 px-6 py-3 bg-white/[0.04] border border-white/10 rounded-full text-sm font-bold text-gray-300 hover:text-white hover:border-white/20 hover:bg-white/[0.08] transition-all outline-none"
                                         >
                                             {showAllProjects ? 'View Less' : 'View More Projects'}
                                             {showAllProjects ? <ChevronUp size={16} /> : <ChevronDown size={16} />}

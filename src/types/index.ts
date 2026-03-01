@@ -9,6 +9,7 @@ export interface Project {
     category: string;
     year: string;
     image: string;
+    videoUrl?: string;
     features: string[];
     featured?: boolean;
     order?: number;

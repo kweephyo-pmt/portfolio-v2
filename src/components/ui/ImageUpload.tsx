@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { UploadCloud, X, Loader2, Image as ImageIcon, Maximize } from 'lucide-react';
 
 interface ImageUploadProps {
@@ -151,9 +152,9 @@ export const ImageUpload = ({ value, onChange, className = '', uploadPreset }: I
                 />
             </div>
             {/* Fullscreen Modal Image Viewer */}
-            {isFullscreen && value && (
+            {isFullscreen && value && typeof document !== 'undefined' && createPortal(
                 <div
-                    className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out"
+                    className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out"
                     onClick={() => setIsFullscreen(false)}
                 >
                     <button
@@ -169,7 +170,8 @@ export const ImageUpload = ({ value, onChange, className = '', uploadPreset }: I
                         className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] cursor-default"
                         onClick={(e) => e.stopPropagation()}
                     />
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );
