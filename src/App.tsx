@@ -6,6 +6,7 @@ import { ProjectDetailsPage } from './pages/ProjectDetailsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { usePortfolioStore } from './store/portfolioStore';
 import { useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import './index.css';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="/admin/*" element={<AdminPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+        <Analytics />
       </ToastProvider>
     </BrowserRouter>
   );
